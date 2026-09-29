@@ -1,0 +1,8 @@
+const SUPABASE_URL = "COLOCA_AQUI_A_URL_DO_SUPABASE";
+
+const SUPABASE_ANON_KEY = "COLOCA_AQUI_A_CHAVE_PUBLICA_DO_SUPABASE";
+
+const db = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+);
