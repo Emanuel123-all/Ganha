@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Interclasse 2026 | Pomba D'Amizade</title>
+
+<meta
+    name="description"
+    content="Classificação oficial do Interclasse 2026 do Colégio Pomba D'Amizade."
+>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="config.js"></script>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f2f4f7;
+    color: #17202a;
+}
+
+header {
+    background: linear-gradient(135deg, #075e2d, #0b8f45);
+    color: white;
+    padding: 35px 20px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 30px;
+}
+
+header p {
+    margin: 8px 0 0;
+    opacity: .9;
+}
+
+.container {
+    width: min(1200px, 94%);
+    margin: 25px auto;
+}
+
+.card {
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 22px;
+    box-shadow: 0 4px 15px rgba(0,0,0,.07);
+}
+
+select {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+h2 {
+    margin-top: 0;
+    color: #075e2d;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 850px;
+}
+
+th {
+    background: #075e2d;
+    color: white;
+    padding: 12px 8px;
+}
+
+td {
+    padding: 11px 8px;
+    text-align: center;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+td:nth-child(2) {
+    text-align: left;
+    font-weight: bold;
+}
+
+tr:hover {
+    background: #f5faf7;
+}
+
+.position {
+    font-weight: bold;
+}
+
+.points {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.match {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.team {
+    width: 40%;
+    font-weight: bold;
+}
+
+.team:first-child {
+    text-align: right;
+}
+
+.score {
+    font-size: 20px;
+    font-weight: bold;
+    min-width: 70px;
+    text-align: center;
+}
+
+.date {
+    color: #777;
+    font-size: 13px;
+}
+
+.loading {
+    text-align: center;
+    padding: 25px;
+}
+
+.error {
+    background: #ffe5e5;
+    color: #a00000;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+footer {
+    text-align: center;
+    padding: 30px;
+    color: #777;
+}
+
+.admin-link {
+    display: inline-block;
+    margin-top: 10px;
+    color: #075e2d;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+@media(max-width:600px) {
+
+    header h1 {
+        font-size: 23px;
+    }
+
+    .card {
+        padding: 14px;
+    }
+
+    .match {
+        font-size: 14px;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>⚽ Colégio Pomba D'Amizade</h1>
+
+<p>Interclasse 2026</p>
+
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<h2>🏆 Competição</h2>
+
+<select id="competitionSelect">
+<option>Carregando...</option>
+</select>
+
+</div>
+
+<div class="card">
+
+<h2>📊 Classificação</h2>
+
+<div id="standings">
+<div class="loading">
+A carregar classificação...
+</div>
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>⚽ Resultados</h2>
+
+<div id="results">
+<div class="loading">
+A carregar resultados...
+</div>
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>📅 Próximos jogos</h2>
+
+<div id="upcoming">
+<div class="loading">
+A carregar jogos...
+</div>
+</div>
+
+</div>
+
+</div>
+
+<footer>
+
+Colégio Pomba D'Amizade © 2026<br>
+
+Interclasse 2026
+
+<br>
+
+<a class="admin-link" href="admin.html">
+Área do administrador
+</a>
+
+</footer>
+
+<script>
+
+let competitions = [];
+let currentCompetition = null;
+let teams = [];
+let matches = [];
+
+const competitionSelect =
+    document.getElementById("competitionSelect");
+
+async function loadCompetitions() {
+
+    const { data, error } =
+        await db
+        .from("competitions")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        showError(error.message);
+        return;
+    }
+
+    competitions = data || [];
+
+    competitionSelect.innerHTML = "";
+
+    if (!competitions.length) {
+
+        competitionSelect.innerHTML =
+            "<option>Nenhuma competição</option>";
+
+        return;
+    }
+
+    competitions.forEach(comp => {
+
+        const option =
+            document.createElement("option");
+
+        option.value = comp.id;
+
+        option.textContent =
+            `${comp.name} — ${comp.sport}`;
+
+        competitionSelect.appendChild(option);
+
+    });
+
+    currentCompetition = competitions[0];
+
+    await loadCompetition();
+
+}
+
+competitionSelect.addEventListener(
+    "change",
+    async function() {
+
+        currentCompetition =
+            competitions.find(
+                c => c.id === this.value
+            );
+
+        await loadCompetition();
+
+    }
+);
+
+async function loadCompetition() {
+
+    if (!currentCompetition) return;
+
+    const competitionId =
+        currentCompetition.id;
+
+    const teamsResponse =
+        await db
+        .from("teams")
+        .select("*")
+        .eq("competition_id", competitionId)
+        .order("name");
+
+    if (teamsResponse.error) {
+
+        showError(
+            teamsResponse.error.message
+        );
+
+        return;
+    }
+
+    teams = teamsResponse.data || [];
+
+    const matchesResponse =
+        await db
+        .from("matches")
+        .select("*")
+        .eq("competition_id", competitionId)
+        .order("match_date", {
+            ascending: true,
+            nullsFirst: false
+        });
+
+    if (matchesResponse.error) {
+
+        showError(
+            matchesResponse.error.message
+        );
+
+        return;
+    }
+
+    matches = matchesResponse.data || [];
+
+    renderStandings();
+
+    renderResults();
+
+    renderUpcoming();
+
+}
+
+function calculateStandings() {
+
+    const table = {};
+
+    teams.forEach(team => {
+
+        table[team.id] = {
+
+            id: team.id,
+
+            name: team.name,
+
+            pj: 0,
+
+            v: 0,
+
+            e: 0,
+
+            d: 0,
+
+            gm: 0,
+
+            gs: 0,
+
+            sg: 0,
+
+            pts: 0
+
+        };
+
+    });
+
+    matches
+    .filter(match => match.status === "played")
+    .forEach(match => {
+
+        const home =
+            table[match.home_team_id];
+
+        const away =
+            table[match.away_team_id];
+
+        if (!home || !away) return;
+
+        const hg =
+            Number(match.home_score);
+
+        const ag =
+            Number(match.away_score);
+
+        home.pj++;
+        away.pj++;
+
+        home.gm += hg;
+        home.gs += ag;
+
+        away.gm += ag;
+        away.gs += hg;
+
+        if (hg > ag) {
+
+            home.v++;
+            home.pts += 3;
+
+            away.d++;
+
+        }
+
+        else if (hg < ag) {
+
+            away.v++;
+            away.pts += 3;
+
+            home.d++;
+
+        }
+
+        else {
+
+            home.e++;
+            away.e++;
+
+            home.pts++;
+            away.pts++;
+
+        }
+
+    });
+
+    Object.values(table).forEach(team => {
+
+        team.sg =
+            team.gm - team.gs;
+
+    });
+
+    return Object.values(table).sort((a,b) => {
+
+        if (b.pts !== a.pts)
+            return b.pts - a.pts;
+
+        if (b.sg !== a.sg)
+            return b.sg - a.sg;
+
+        if (b.gm !== a.gm)
+            return b.gm - a.gm;
+
+        return a.name.localeCompare(b.name);
+
+    });
+
+}
+
+function renderStandings() {
+
+    const standings =
+        calculateStandings();
+
+    if (!standings.length) {
+
+        document.getElementById("standings")
+            .innerHTML =
+            "<p>Nenhuma equipa registada.</p>";
+
+        return;
+    }
+
+    let html = `
+
+    <div class="table-container">
+
+    <table>
+
+    <thead>
+
+    <tr>
+
+    <th>#</th>
+    <th>Turma</th>
+    <th>PJ</th>
+    <th>V</th>
+    <th>E</th>
+    <th>D</th>
+    <th>GM</th>
+    <th>GS</th>
+    <th>SG</th>
+    <th>PTS</th>
+
+    </tr>
+
+    </thead>
+
+    <tbody>
+
+    `;
+
+    standings.forEach((team, index) => {
+
+        html += `
+
+        <tr>
+
+        <td class="position">
+        ${index + 1}
+        </td>
+
+        <td>
+        ${escapeHtml(team.name)}
+        </td>
+
+        <td>${team.pj}</td>
+
+        <td>${team.v}</td>
+
+        <td>${team.e}</td>
+
+        <td>${team.d}</td>
+
+        <td>${team.gm}</td>
+
+        <td>${team.gs}</td>
+
+        <td>${team.sg}</td>
+
+        <td class="points">
+        ${team.pts}
+        </td>
+
+        </tr>
+
+        `;
+
+    });
+
+    html += `
+
+    </tbody>
+
+    </table>
+
+    </div>
+
+    `;
+
+    document.getElementById("standings")
+        .innerHTML = html;
+
+}
+
+function getTeamName(id) {
+
+    const team =
+        teams.find(t => t.id === id);
+
+    return team
+        ? team.name
+        : "Equipa";
+
+}
+
+function renderResults() {
+
+    const played =
+        matches.filter(
+            m => m.status === "played"
+        );
+
+    if (!played.length) {
+
+        document.getElementById("results")
+            .innerHTML =
+            "<p>Nenhum resultado registado.</p>";
+
+        return;
+
+    }
+
+    let html = "";
+
+    [...played]
+    .reverse()
+    .forEach(match => {
+
+        html += `
+
+        <div class="match">
+
+            <div class="team">
+
+                ${escapeHtml(
+                    getTeamName(match.home_team_id)
+                )}
+
+            </div>
+
+            <div class="score">
+
+                ${match.home_score}
+                -
+                ${match.away_score}
+
+            </div>
+
+            <div class="team">
+
+                ${escapeHtml(
+                    getTeamName(match.away_team_id)
+                )}
+
+            </div>
+
+        </div>
+
+        `;
+
+    });
+
+    document.getElementById("results")
+        .innerHTML = html;
+
+}
+
+function renderUpcoming() {
+
+    const upcoming =
+        matches.filter(
+            m => m.status === "scheduled"
+        );
+
+    if (!upcoming.length) {
+
+        document.getElementById("upcoming")
+            .innerHTML =
+            "<p>Nenhum próximo jogo registado.</p>";
+
+        return;
+
+    }
+
+    let html = "";
+
+    upcoming.forEach(match => {
+
+        let date = "";
+
+        if (match.match_date) {
+
+            date =
+                new Date(
+                    match.match_date
+                ).toLocaleString(
+                    "pt-PT"
+                );
+
+        }
+
+        html += `
+
+        <div class="match">
+
+            <div class="team">
+
+                ${escapeHtml(
+                    getTeamName(match.home_team_id)
+                )}
+
+            </div>
+
+            <div class="score">
+
+                VS
+
+                <div class="date">
+                ${date}
+                </div>
+
+            </div>
+
+            <div class="team">
+
+                ${escapeHtml(
+                    getTeamName(match.away_team_id)
+                )}
+
+            </div>
+
+        </div>
+
+        `;
+
+    });
+
+    document.getElementById("upcoming")
+        .innerHTML = html;
+
+}
+
+function escapeHtml(text) {
+
+    return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+function showError(message) {
+
+    document.getElementById("standings")
+        .innerHTML = `
+
+        <div class="error">
+
+        Erro ao carregar os dados:
+
+        ${escapeHtml(message)}
+
+        </div>
+
+        `;
+
+}
+
+loadCompetitions();
+
+</script>
+
+</body>
+  </html>
