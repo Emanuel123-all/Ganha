@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Administrador - Pomba D'Amizade</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        header {
+            background: #0f172a;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: #cbd5e1;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .card h2 {
+            margin-bottom: 15px;
+            color: #0f172a;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        button {
+            border: none;
+            padding: 12px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-success {
+            background: #16a34a;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .status {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            background: #e2e8f0;
+        }
+
+        .teams {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+        }
+
+        .team {
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .team h3 {
+            margin-bottom: 8px;
+        }
+
+        .team p {
+            color: #64748b;
+            margin-bottom: 12px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .badge-pendente {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-classificado {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-eliminado {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .info {
+            background: #eff6ff;
+            color: #1e40af;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 20px;
+            }
+
+            .container {
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Painel de Administrador</h1>
+        <p>Interclasse — Pomba D'Amizade</p>
+    </header>
+
+    <main class="container">
+
+        <div class="info">
+            <strong>Área administrativa</strong><br>
+            Este painel será ligado ao Supabase para guardar equipas,
+            jogos, resultados e classificações.
+        </div>
+
+        <section class="card">
+            <h2>Adicionar equipa</h2>
+
+            <div class="form-grid">
+                <input
+                    type="text"
+                    id="nomeEquipe"
+                    placeholder="Nome da equipa"
+                >
+
+                <input
+                    type="text"
+                    id="turmaEquipe"
+                    placeholder="Turma"
+                >
+
+                <button
+                    class="btn-primary"
+                    onclick="adicionarEquipe()"
+                >
+                    Adicionar equipa
+                </button>
+            </div>
+
+            <div id="mensagem" class="status">
+                Nenhuma alteração realizada.
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Equipas</h2>
+
+            <div id="listaEquipes" class="teams">
+                <div class="team">
+                    <h3>Exemplo FC</h3>
+                    <p>10ª Classe</p>
+                    <span class="badge badge-pendente">
+                        Pendente
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Alterar estado da equipa</h2>
+
+            <div class="form-grid">
+
+                <select id="estadoEquipe">
+                    <option value="pendente">Pendente</option>
+                    <option value="classificado">Classificado</option>
+                    <option value="eliminado">Eliminado</option>
+                </select>
+
+                <button
+                    class="btn-success"
+                    onclick="alterarEstado()"
+                >
+                    Guardar estado
+                </button>
+
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+
+        function adicionarEquipe() {
+
+            const nome = document.getElementById("nomeEquipe").value;
+            const turma = document.getElementById("turmaEquipe").value;
+            const mensagem = document.getElementById("mensagem");
+
+            if (nome === "" || turma === "") {
+                mensagem.textContent =
+                    "Preenche o nome da equipa e a turma.";
+                return;
+            }
+
+            mensagem.textContent =
+                "Equipa adicionada localmente. O Supabase será ligado depois.";
+
+            document.getElementById("nomeEquipe").value = "";
+            document.getElementById("turmaEquipe").value = "";
+        }
+
+
+        function alterarEstado() {
+
+            const estado =
+                document.getElementById("estadoEquipe").value;
+
+            const mensagem =
+                document.getElementById("mensagem");
+
+            if (estado === "classificado") {
+
+                mensagem.textContent =
+                    "Estado definido como CLASSIFICADO.";
+
+            } else if (estado === "eliminado") {
+
+                mensagem.textContent =
+                    "Estado definido como ELIMINADO.";
+
+            } else {
+
+                mensagem.textContent =
+                    "Estado definido como PENDENTE.";
+            }
+        }
+
+    </script>
+
+</body>
+  </html>
