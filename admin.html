@@ -162,80 +162,72 @@
 
 
     // ==========================================
-    // CARREGAR JOGOS
-    // ==========================================
+// CARREGAR JOGOS
+// ==========================================
 
-    async function carregarJogos() {
+async function carregarJogos() {
 
-      const { data, error } = await clienteSupabase
-        .from("jogos")
-        .select("*")
-        .order("data_hora");
+  const { data, error } = await clienteSupabase
+    .from("jogos")
+    .select("*");
 
-      if (error) {
+  if (error) {
 
-        console.error("Erro nos jogos:", error);
+    console.error("Erro nos jogos:", error);
 
-        document.getElementById("listaJogos").innerHTML =
-          '<p class="erro">❌ Erro ao carregar os jogos.</p>';
+    document.getElementById("listaJogos").innerHTML =
+      '<p class="erro">❌ Erro ao carregar os jogos.</p>';
 
-        throw error;
-      }
+    throw error;
+  }
 
-      let html = "";
+  let html = "";
 
-      if (!data || data.length === 0) {
+  if (!data || data.length === 0) {
 
-        html = "<p>Nenhum jogo encontrado.</p>";
+    html = "<p>Nenhum jogo encontrado.</p>";
 
-      } else {
+  } else {
 
-        data.forEach(jogo => {
+    data.forEach(jogo => {
 
-          html += `
-            <div class="jogo">
+      html += `
+        <div class="jogo">
 
-              <strong>
-                Jogo #${jogo.id}
-              </strong>
+          <strong>
+            ${jogo["equipa da casa"] || "-"}
+            🆚
+            ${jogo["equipa visitante"] || "-"}
+          </strong>
 
-              <br><br>
+          <br><br>
 
-              Equipa da casa: ${jogo.equipa_casa_id || "-"}
+          Data: ${jogo["data"] || "-"}
 
-              <br>
+          <br>
 
-              Equipa visitante: ${jogo.equipa_fora_id || "-"}
+          Local: ${jogo["local"] || "-"}
 
-              <br>
+          <br>
 
-              Data: ${jogo.data_hora || "-"}
+          Resultado:
+          ${jogo["Pontos da casa"] ?? 0}
+          -
+          ${jogo["Pontos visitante"] ?? 0}
 
-              <br>
+          <br>
 
-              Local: ${jogo.local || "-"}
+          Estado:
+          ${jogo["estado"] || "agendado"}
 
-              <br>
+        </div>
+      `;
 
-              Resultado:
-              ${jogo.golos_casa ?? 0}
-              -
-              ${jogo.golos_fora ?? 0}
+    });
+  }
 
-              <br>
-
-              Estado:
-              ${jogo.estado || "agendado"}
-
-            </div>
-          `;
-
-        });
-      }
-
-      document.getElementById("listaJogos").innerHTML = html;
-    }
-
+  document.getElementById("listaJogos").innerHTML = html;
+}
 
     // ==========================================
     // CARREGAR TODOS OS DADOS
@@ -276,4 +268,4 @@
   </script>
 
 </body>
-  </html>
+</html>
