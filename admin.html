@@ -114,54 +114,60 @@
 
 
     // ==========================================
-    // CARREGAR EQUIPAS
-    // ==========================================
+// CARREGAR EQUIPAS
+// ==========================================
 
-    async function carregarEquipas() {
+async function carregarEquipas() {
 
-      const { data, error } = await clienteSupabase
-        .from("equipas")
-        .select("*")
-        .order("id");
+  const { data, error } = await clienteSupabase
+    .from("equipas")
+    .select("*")
+    .order("id");
 
-      if (error) {
+  if (error) {
 
-        console.error("Erro nas equipas:", error);
+    console.error("Erro nas equipas:", error);
 
-        document.getElementById("listaEquipas").innerHTML =
-          '<p class="erro">❌ Erro ao carregar as equipas.</p>';
+    document.getElementById("listaEquipas").innerHTML =
+      '<p class="erro">❌ Erro ao carregar as equipas.</p>';
 
-        throw error;
-      }
+    throw error;
+  }
 
-      let html = "";
+  let html = "";
 
-      if (!data || data.length === 0) {
+  if (!data || data.length === 0) {
 
-        html = "<p>Nenhuma equipa encontrada.</p>";
+    html = "<p>Nenhuma equipa encontrada.</p>";
 
-      } else {
+  } else {
 
-        data.forEach(equipa => {
+    data.forEach(equipa => {
 
-          html += `
-            <div class="equipa">
-              <strong>${equipa.id}. ${equipa.nome}</strong>
-              <br>
-              Grupo: ${equipa.grupo || "-"}
-              <br>
-              Cor/estado: ${equipa.cor || "normal"}
-            </div>
-          `;
+      html += `
+        <div class="equipa">
 
-        });
-      }
+          <strong>${equipa.id}. ${equipa.nome}</strong>
 
-      document.getElementById("listaEquipas").innerHTML = html;
-    }
+          <br>
+
+          Grupo: ${equipa.grupo || "-"}
+
+          <br>
+
+          Cor/estado: ${equipa.cor || "normal"}
+
+        </div>
+      `;
+
+    });
+  }
+
+  document.getElementById("listaEquipas").innerHTML = html;
+}
 
 
-    // ==========================================
+// ==========================================
 // CARREGAR JOGOS
 // ==========================================
 
@@ -193,6 +199,8 @@ async function carregarJogos() {
   }
 
 
+  // Buscar os nomes das equipas
+
   const { data: equipas, error: erroEquipas } = await clienteSupabase
     .from("equipas")
     .select("id, nome");
@@ -209,6 +217,7 @@ async function carregarJogos() {
 
 
   let html = "";
+
 
   if (!jogos || jogos.length === 0) {
 
@@ -266,16 +275,63 @@ async function carregarJogos() {
     });
   }
 
+
   document.getElementById("listaJogos").innerHTML = html;
+}
+
+
+// ==========================================
+// CARREGAR TODOS OS DADOS
+// ==========================================
+
+async function carregarDados() {
+
+  try {
+
+    document.getElementById("listaEquipas").innerHTML =
+      "<p>⏳ A carregar equipas...</p>";
+
+    document.getElementById("listaJogos").innerHTML =
+      "<p>⏳ A carregar jogos...</p>";
+
+
+    await carregarEquipas();
+
+    await carregarJogos();
+
+
+    const mensagem = document.getElementById("mensagem");
+
+    if (mensagem) {
+
+      mensagem.innerHTML =
+        "✅ Dados carregados com sucesso!";
+
+      mensagem.className = "sucesso";
     }
 
-    // ==========================================
-    // INICIAR
-    // ==========================================
 
-    carregarDados();
+  } catch (error) {
 
-  </script>
+    console.error("Erro ao carregar dados:", error);
 
-</body>
-</html>
+
+    const mensagem = document.getElementById("mensagem");
+
+    if (mensagem) {
+
+      mensagem.innerHTML =
+        "❌ Não foi possível ligar ao Supabase.";
+
+      mensagem.className = "erro";
+    }
+
+  }
+}
+
+
+// ==========================================
+// INICIAR PAINEL
+// ==========================================
+
+carregarDados();
