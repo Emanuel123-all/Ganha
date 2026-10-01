@@ -44,30 +44,20 @@
       margin: 5px;
     }
 
-    button:hover {
-      opacity: 0.9;
-    }
-
-    .equipa {
-      padding: 10px;
-      border-bottom: 1px solid #ddd;
-    }
-
+    .equipa,
     .jogo {
       padding: 12px;
       border-bottom: 1px solid #ddd;
     }
 
-    .status {
-      font-weight: bold;
-    }
-
     .sucesso {
       color: green;
+      font-weight: bold;
     }
 
     .erro {
       color: red;
+      font-weight: bold;
     }
 
     #mensagem {
@@ -82,7 +72,9 @@
 
   <h1>🏆 Painel de Administrador</h1>
 
-  <div id="mensagem">A ligar ao banco de dados...</div>
+  <div id="mensagem">
+    A ligar ao banco de dados...
+  </div>
 
   <div class="caixa">
     <h2>⚽ Equipas</h2>
@@ -109,12 +101,13 @@
     // CONFIGURAÇÃO DO SUPABASE
     // ==========================================
 
-    const SUPABASE_URL = "https://ezszalkllbumkpobuilc.supabase.co";
+    const SUPABASE_URL =
+      "https://ezszalkllbumkpobuilc.supabase.co";
 
-    // COLOCA AQUI A TUA PUBLISHABLE KEY
-    const SUPABASE_KEY = "sb_publishable_kC3NtuituZzsy2DtCzDI0w_i7-zyWC2";
+    const SUPABASE_KEY =
+     "sb_publishable_kC3NtuituZzsy2DtCzDI0w_i7-zyWC2";
 
-    const supabase = window.supabase.createClient(
+    const clienteSupabase = window.supabase.createClient(
       SUPABASE_URL,
       SUPABASE_KEY
     );
@@ -126,23 +119,27 @@
 
     async function carregarEquipas() {
 
-      const { data, error } = await supabase
+      const { data, error } = await clienteSupabase
         .from("equipas")
         .select("*")
         .order("id");
 
       if (error) {
-        document.getElementById("listaEquipas").innerHTML =
-          '<p class="erro">Erro ao carregar equipas.</p>';
 
-        console.error(error);
-        return;
+        console.error("Erro nas equipas:", error);
+
+        document.getElementById("listaEquipas").innerHTML =
+          '<p class="erro">❌ Erro ao carregar as equipas.</p>';
+
+        throw error;
       }
 
       let html = "";
 
-      if (data.length === 0) {
+      if (!data || data.length === 0) {
+
         html = "<p>Nenhuma equipa encontrada.</p>";
+
       } else {
 
         data.forEach(equipa => {
@@ -153,7 +150,7 @@
               <br>
               Grupo: ${equipa.grupo || "-"}
               <br>
-              Estado: ${equipa.cor || "normal"}
+              Cor/estado: ${equipa.cor || "normal"}
             </div>
           `;
 
@@ -170,27 +167,24 @@
 
     async function carregarJogos() {
 
-      const { data, error } = await supabase
+      const { data, error } = await clienteSupabase
         .from("jogos")
-        .select(`
-          *,
-          equipa_casa:equipas!jogos_equipa_casa_id_fkey(nome),
-          equipa_fora:equipas!jogos_equipa_fora_id_fkey(nome)
-        `)
+        .select("*")
         .order("data_hora");
 
       if (error) {
 
-        document.getElementById("listaJogos").innerHTML =
-          '<p class="erro">Erro ao carregar jogos.</p>';
+        console.error("Erro nos jogos:", error);
 
-        console.error(error);
-        return;
+        document.getElementById("listaJogos").innerHTML =
+          '<p class="erro">❌ Erro ao carregar os jogos.</p>';
+
+        throw error;
       }
 
       let html = "";
 
-      if (data.length === 0) {
+      if (!data || data.length === 0) {
 
         html = "<p>Nenhum jogo encontrado.</p>";
 
@@ -202,17 +196,25 @@
             <div class="jogo">
 
               <strong>
-                ${jogo.equipa_casa?.nome || "Equipa"} 
-                🆚 
-                ${jogo.equipa_fora?.nome || "Equipa"}
+                Jogo #${jogo.id}
               </strong>
 
               <br><br>
 
+              Equipa da casa: ${jogo.equipa_casa_id || "-"}
+
+              <br>
+
+              Equipa visitante: ${jogo.equipa_fora_id || "-"}
+
+              <br>
+
               Data: ${jogo.data_hora || "-"}
+
               <br>
 
               Local: ${jogo.local || "-"}
+
               <br>
 
               Resultado:
@@ -223,9 +225,7 @@
               <br>
 
               Estado:
-              <span class="status">
-                ${jogo.estado || "agendado"}
-              </span>
+              ${jogo.estado || "agendado"}
 
             </div>
           `;
@@ -243,14 +243,27 @@
 
     async function carregarDados() {
 
-      document.getElementById("mensagem").innerText =
-        "A carregar dados...";
+      const mensagem =
+        document.getElementById("mensagem");
 
-      await carregarEquipas();
-      await carregarJogos();
+      mensagem.innerText =
+        "A ligar ao banco de dados...";
 
-      document.getElementById("mensagem").innerHTML =
-        '<span class="sucesso">✅ Ligação ao Supabase funcionando!</span>';
+      try {
+
+        await carregarEquipas();
+        await carregarJogos();
+
+        mensagem.innerHTML =
+          '<span class="sucesso">✅ Ligação ao Supabase funcionando!</span>';
+
+      } catch (erro) {
+
+        console.error(erro);
+
+        mensagem.innerHTML =
+          '<span class="erro">❌ Não foi possível ligar ao Supabase.</span>';
+      }
     }
 
 
@@ -263,4 +276,4 @@
   </script>
 
 </body>
-    </html>
+  </html>
