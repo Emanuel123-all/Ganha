@@ -169,7 +169,18 @@ async function carregarJogos() {
 
   const { data, error } = await clienteSupabase
     .from("jogos")
-    .select("*");
+    .select(`
+      id,
+      equipa_casa_id,
+      equipa_fora_id,
+      data_jogo,
+      hora_jogo,
+      local,
+      pontos_casa,
+      pontos_fora,
+      estado
+    `)
+    .order("data_jogo", { ascending: true });
 
   if (error) {
 
@@ -191,44 +202,54 @@ async function carregarJogos() {
 
     data.forEach(jogo => {
 
+      const equipaCasa = equipes.find(
+        equipa => equipa.id === jogo.equipa_casa_id
+      );
+
+      const equipaFora = equipes.find(
+        equipa => equipa.id === jogo.equipa_fora_id
+      );
+
       html += `
         <div class="jogo">
 
           <strong>
-            ${jogo["equipa da casa"] || "-"}
+            ${equipaCasa ? equipaCasa.nome : "Equipa desconhecida"}
             🆚
-            ${jogo["equipa visitante"] || "-"}
+            ${equipaFora ? equipaFora.nome : "Equipa desconhecida"}
           </strong>
 
           <br><br>
 
-          Data: ${jogo["data"] || "-"}
+          📅 Data: ${jogo.data_jogo || "-"}
 
           <br>
 
-          Local: ${jogo["local"] || "-"}
+          🕐 Hora: ${jogo.hora_jogo || "-"}
 
           <br>
 
-          Resultado:
-          ${jogo["Pontos da casa"] ?? 0}
+          📍 Local: ${jogo.local || "-"}
+
+          <br>
+
+          🏀 Resultado:
+          ${jogo.pontos_casa ?? 0}
           -
-          ${jogo["Pontos visitante"] ?? 0}
+          ${jogo.pontos_fora ?? 0}
 
           <br>
 
-          Estado:
-          ${jogo["estado"] || "agendado"}
+          📌 Estado:
+          ${jogo.estado || "agendado"}
 
         </div>
       `;
-
     });
   }
 
   document.getElementById("listaJogos").innerHTML = html;
-}
-
+          }
     // ==========================================
     // CARREGAR TODOS OS DADOS
     // ==========================================
