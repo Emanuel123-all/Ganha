@@ -318,4 +318,1333 @@
         </label>
 
 
-        <select
+        <select id="equipaCasa">
+
+          <option value="">
+            Selecionar equipa
+          </option>
+
+        </select>
+
+      </div>
+
+
+
+      <div>
+
+        <label>
+          Equipa visitante
+        </label>
+
+
+        <select id="equipaFora">
+
+          <option value="">
+            Selecionar equipa
+          </option>
+
+        </select>
+
+      </div>
+
+
+    </div>
+
+
+
+    <div class="linha">
+
+
+      <div>
+
+        <label>
+          Data
+        </label>
+
+
+        <input
+          type="date"
+          id="dataJogo"
+        >
+
+      </div>
+
+
+
+      <div>
+
+        <label>
+          Hora
+        </label>
+
+
+        <input
+          type="time"
+          id="horaJogo"
+        >
+
+      </div>
+
+
+    </div>
+
+
+
+    <input
+      type="text"
+      id="localJogo"
+      placeholder="Local do jogo"
+    >
+
+
+    <button
+      class="btn-azul"
+      onclick="adicionarJogo()"
+    >
+
+      ➕ Criar jogo
+
+    </button>
+
+  </section>
+
+
+
+  <!-- =============================== -->
+  <!-- LISTA DE JOGOS -->
+  <!-- =============================== -->
+
+  <section class="caixa">
+
+    <h2>📅 Jogos</h2>
+
+
+    <div id="listaJogos">
+
+      A carregar...
+
+    </div>
+
+  </section>
+
+
+
+  <!-- =============================== -->
+  <!-- ATUALIZAR -->
+  <!-- =============================== -->
+
+  <section class="caixa">
+
+    <button
+      class="btn-principal"
+      onclick="carregarDados()"
+    >
+
+      🔄 Atualizar dados
+
+    </button>
+
+  </section>
+
+
+</main>
+
+
+
+<script>
+
+
+  // ==========================================
+  // LIGAÇÃO AO SUPABASE
+  // ==========================================
+
+  let clienteSupabase;
+
+
+  try {
+
+    if (
+      typeof SUPABASE_URL === "undefined" ||
+      typeof SUPABASE_ANON_KEY === "undefined"
+    ) {
+
+      throw new Error(
+        "SUPABASE_URL ou SUPABASE_ANON_KEY não encontrados no config.js"
+      );
+
+    }
+
+
+    clienteSupabase =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      );
+
+
+  } catch (error) {
+
+    console.error(
+      "Erro na ligação ao Supabase:",
+      error
+    );
+
+
+    document.getElementById("mensagem").textContent =
+      "🔴 Erro no config.js: verifica a URL e a Publishable Key.";
+
+    document.getElementById("mensagem").className =
+      "mensagem erro";
+
+  }
+
+
+
+  // ==========================================
+  // MENSAGEM
+  // ==========================================
+
+  function mostrarMensagem(
+    texto,
+    tipo = ""
+  ) {
+
+    const mensagem =
+      document.getElementById("mensagem");
+
+
+    mensagem.textContent = texto;
+
+
+    mensagem.className =
+      "mensagem " + tipo;
+
+  }
+
+
+
+  // ==========================================
+  // ESCAPAR HTML
+  // ==========================================
+
+  function escaparHTML(texto) {
+
+    if (
+      texto === null ||
+      texto === undefined
+    ) {
+
+      return "";
+
+    }
+
+
+    return String(texto)
+
+      .replace(/&/g, "&amp;")
+
+      .replace(/</g, "&lt;")
+
+      .replace(/>/g, "&gt;")
+
+      .replace(/"/g, "&quot;")
+
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+
+  // ==========================================
+  // CARREGAR EQUIPAS
+  // ==========================================
+
+  async function carregarEquipas() {
+
+
+    const { data, error } =
+      await clienteSupabase
+
+        .from("equipas")
+
+        .select(
+          "id, nome, grupo, cor"
+        )
+
+        .order(
+          "id",
+          { ascending: true }
+        );
+
+
+    if (error) {
+
+      console.error(
+        "Erro ao carregar equipas:",
+        error
+      );
+
+
+      document.getElementById(
+        "listaEquipas"
+      ).innerHTML =
+
+        `<p class="erro">
+          ❌ Erro ao carregar equipas.
+          <br><br>
+          ${escaparHTML(error.message)}
+        </p>`;
+
+
+      throw error;
+
+    }
+
+
+
+    const lista =
+      document.getElementById(
+        "listaEquipas"
+      );
+
+
+
+    if (
+      !data ||
+      data.length === 0
+    ) {
+
+      lista.innerHTML =
+        '<p class="vazio">Nenhuma equipa cadastrada.</p>';
+
+    }
+
+    else {
+
+      lista.innerHTML = "";
+
+
+      data.forEach(
+        equipa => {
+
+
+          const div =
+            document.createElement(
+              "div"
+            );
+
+
+          div.className =
+            "equipa";
+
+
+          div.innerHTML = `
+
+            <strong>
+              ${escaparHTML(equipa.nome)}
+            </strong>
+
+            <div class="info">
+
+              👥 Grupo:
+              ${escaparHTML(
+                equipa.grupo || "-"
+              )}
+
+              <br><br>
+
+              🎨 Estado:
+              ${escaparHTML(
+                equipa.cor || "normal"
+              )}
+
+            </div>
+
+
+            <button
+              class="btn-vermelho"
+              onclick="apagarEquipa(${equipa.id})"
+            >
+
+              🗑️ Apagar equipa
+
+            </button>
+
+          `;
+
+
+          lista.appendChild(div);
+
+        }
+      );
+
+    }
+
+
+
+    atualizarSelectsEquipas(
+      data || []
+    );
+
+  }
+
+
+
+  // ==========================================
+  // ATUALIZAR SELECTS DAS EQUIPAS
+  // ==========================================
+
+  function atualizarSelectsEquipas(
+    equipas
+  ) {
+
+
+    const casa =
+      document.getElementById(
+        "equipaCasa"
+      );
+
+
+    const fora =
+      document.getElementById(
+        "equipaFora"
+      );
+
+
+    casa.innerHTML =
+      '<option value="">Selecionar equipa</option>';
+
+
+    fora.innerHTML =
+      '<option value="">Selecionar equipa</option>';
+
+
+
+    equipas.forEach(
+      equipa => {
+
+
+        const optionCasa =
+          document.createElement(
+            "option"
+          );
+
+
+        optionCasa.value =
+          equipa.id;
+
+
+        optionCasa.textContent =
+          equipa.nome;
+
+
+        casa.appendChild(
+          optionCasa
+        );
+
+
+
+        const optionFora =
+          document.createElement(
+            "option"
+          );
+
+
+        optionFora.value =
+          equipa.id;
+
+
+        optionFora.textContent =
+          equipa.nome;
+
+
+        fora.appendChild(
+          optionFora
+        );
+
+      }
+    );
+
+  }
+
+
+
+  // ==========================================
+  // ADICIONAR EQUIPA
+  // ==========================================
+
+  async function adicionarEquipa() {
+
+
+    const nome =
+      document.getElementById(
+        "nomeEquipa"
+      ).value.trim();
+
+
+    const grupo =
+      document.getElementById(
+        "grupoEquipa"
+      ).value.trim();
+
+
+
+    if (!nome) {
+
+      alert(
+        "⚠️ Coloca o nome da equipa."
+      );
+
+      return;
+
+    }
+
+
+
+    const { data, error } =
+      await clienteSupabase
+
+        .from("equipas")
+
+        .insert({
+
+          nome: nome,
+
+          grupo:
+            grupo || null,
+
+          cor: "normal"
+
+        })
+
+        .select()
+
+        .single();
+
+
+
+    if (error) {
+
+      console.error(
+        "Erro ao adicionar equipa:",
+        error
+      );
+
+
+      alert(
+        "❌ Erro ao adicionar equipa:\n\n" +
+        error.message
+      );
+
+
+      return;
+
+    }
+
+
+
+    alert(
+      "✅ Equipa adicionada com sucesso!\n\n" +
+      data.nome
+    );
+
+
+
+    document.getElementById(
+      "nomeEquipa"
+    ).value = "";
+
+
+    document.getElementById(
+      "grupoEquipa"
+    ).value = "";
+
+
+
+    await carregarEquipas();
+
+  }
+
+
+
+  // ==========================================
+  // APAGAR EQUIPA
+  // ==========================================
+
+  async function apagarEquipa(id) {
+
+
+    const confirmar =
+      confirm(
+
+        "⚠️ Tens certeza que queres apagar esta equipa?\n\n" +
+
+        "Esta ação pode afetar jogos e classificação."
+
+      );
+
+
+    if (!confirmar) {
+
+      return;
+
+    }
+
+
+
+    const { error } =
+      await clienteSupabase
+
+        .from("equipas")
+
+        .delete()
+
+        .eq("id", id);
+
+
+
+    if (error) {
+
+      console.error(
+        "Erro ao apagar equipa:",
+        error
+      );
+
+
+      alert(
+        "❌ Erro ao apagar equipa:\n\n" +
+        error.message
+      );
+
+
+      return;
+
+    }
+
+
+
+    alert(
+      "✅ Equipa apagada com sucesso!"
+    );
+
+
+    await carregarDados();
+
+  }
+
+
+
+  // ==========================================
+  // ADICIONAR JOGO
+  // ==========================================
+
+  async function adicionarJogo() {
+
+
+    const equipaCasa =
+      document.getElementById(
+        "equipaCasa"
+      ).value;
+
+
+    const equipaFora =
+      document.getElementById(
+        "equipaFora"
+      ).value;
+
+
+    const dataJogo =
+      document.getElementById(
+        "dataJogo"
+      ).value;
+
+
+    const horaJogo =
+      document.getElementById(
+        "horaJogo"
+      ).value;
+
+
+    const localJogo =
+      document.getElementById(
+        "localJogo"
+      ).value.trim();
+
+
+
+    if (
+      !equipaCasa ||
+      !equipaFora
+    ) {
+
+      alert(
+        "⚠️ Seleciona as duas equipas."
+      );
+
+      return;
+
+    }
+
+
+
+    if (
+      equipaCasa === equipaFora
+    ) {
+
+      alert(
+        "⚠️ A equipa da casa e a equipa visitante não podem ser iguais."
+      );
+
+      return;
+
+    }
+
+
+
+    const { data, error } =
+      await clienteSupabase
+
+        .from("jogos")
+
+        .insert({
+
+          equipa_casa_id:
+            Number(equipaCasa),
+
+          equipa_fora_id:
+            Number(equipaFora),
+
+          data_jogo:
+            dataJogo || null,
+
+          hora_jogo:
+            horaJogo || null,
+
+          local:
+            localJogo || null,
+
+          pontos_casa: 0,
+
+          pontos_fora: 0,
+
+          estado: "agendado"
+
+        })
+
+        .select()
+
+        .single();
+
+
+
+    if (error) {
+
+      console.error(
+        "Erro ao criar jogo:",
+        error
+      );
+
+
+      alert(
+        "❌ Erro ao criar jogo:\n\n" +
+        error.message
+      );
+
+
+      return;
+
+    }
+
+
+
+    alert(
+      "✅ Jogo criado com sucesso!"
+    );
+
+
+
+    document.getElementById(
+      "equipaCasa"
+    ).value = "";
+
+
+    document.getElementById(
+      "equipaFora"
+    ).value = "";
+
+
+    document.getElementById(
+      "dataJogo"
+    ).value = "";
+
+
+    document.getElementById(
+      "horaJogo"
+    ).value = "";
+
+
+    document.getElementById(
+      "localJogo"
+    ).value = "";
+
+
+
+    await carregarJogos();
+
+  }
+
+
+
+  // ==========================================
+  // CARREGAR JOGOS
+  // ==========================================
+
+  async function carregarJogos() {
+
+
+    const lista =
+      document.getElementById(
+        "listaJogos"
+      );
+
+
+
+    const { data, error } =
+      await clienteSupabase
+
+        .from("jogos")
+
+        .select(`
+          id,
+          data_jogo,
+          hora_jogo,
+          local,
+          pontos_casa,
+          pontos_fora,
+          estado,
+          equipa_casa_id,
+          equipa_fora_id
+        `)
+
+        .order(
+          "data_jogo",
+          { ascending: true }
+        );
+
+
+
+    if (error) {
+
+      console.error(
+        "Erro ao carregar jogos:",
+        error
+      );
+
+
+      lista.innerHTML =
+
+        `<p class="erro">
+
+          ❌ Erro ao carregar jogos.
+
+          <br><br>
+
+          ${escaparHTML(
+            error.message
+          )}
+
+        </p>`;
+
+
+      throw error;
+
+    }
+
+
+
+    if (
+      !data ||
+      data.length === 0
+    ) {
+
+      lista.innerHTML =
+        '<p class="vazio">Nenhum jogo cadastrado.</p>';
+
+      return;
+
+    }
+
+
+
+    const { data: equipas, error: erroEquipas } =
+      await clienteSupabase
+
+        .from("equipas")
+
+        .select(
+          "id, nome"
+        );
+
+
+
+    if (erroEquipas) {
+
+      console.error(
+        erroEquipas
+      );
+
+      throw erroEquipas;
+
+    }
+
+
+
+    const mapaEquipas = {};
+
+
+    equipas.forEach(
+      equipa => {
+
+        mapaEquipas[
+          equipa.id
+        ] =
+          equipa.nome;
+
+      }
+    );
+
+
+
+    lista.innerHTML = "";
+
+
+
+    data.forEach(
+      jogo => {
+
+
+        const nomeCasa =
+          mapaEquipas[
+            jogo.equipa_casa_id
+          ] ||
+          "Equipa";
+
+
+        const nomeFora =
+          mapaEquipas[
+            jogo.equipa_fora_id
+          ] ||
+          "Equipa";
+
+
+
+        const div =
+          document.createElement(
+            "div"
+          );
+
+
+        div.className =
+          "jogo";
+
+
+
+        div.innerHTML = `
+
+          <strong>
+
+            ${escaparHTML(
+              nomeCasa
+            )}
+
+            ×
+
+            ${escaparHTML(
+              nomeFora
+            )}
+
+          </strong>
+
+
+          <br><br>
+
+
+          📅 Data:
+          ${escaparHTML(
+            jogo.data_jogo || "-"
+          )}
+
+
+          <br>
+
+
+          🕐 Hora:
+          ${escaparHTML(
+            jogo.hora_jogo || "-"
+          )}
+
+
+          <br>
+
+
+          📍 Local:
+          ${escaparHTML(
+            jogo.local || "-"
+          )}
+
+
+
+          <div class="resultado">
+
+            <input
+              type="number"
+              min="0"
+              id="casa-${jogo.id}"
+              value="${jogo.pontos_casa ?? 0}"
+            >
+
+
+            <strong>×</strong>
+
+
+            <input
+              type="number"
+              min="0"
+              id="fora-${jogo.id}"
+              value="${jogo.pontos_fora ?? 0}"
+            >
+
+          </div>
+
+
+
+          <select
+            id="estado-${jogo.id}"
+          >
+
+            <option
+              value="agendado"
+              ${
+                jogo.estado === "agendado"
+                  ? "selected"
+                  : ""
+              }
+            >
+              Agendado
+            </option>
+
+
+            <option
+              value="em_andamento"
+              ${
+                jogo.estado === "em_andamento"
+                  ? "selected"
+                  : ""
+              }
+            >
+              Em andamento
+            </option>
+
+
+            <option
+              value="terminado"
+              ${
+                jogo.estado === "terminado"
+                  ? "selected"
+                  : ""
+              }
+            >
+              Terminado
+            </option>
+
+          </select>
+
+
+
+          <button
+            class="btn-verde"
+            onclick="guardarResultado(${jogo.id})"
+          >
+
+            💾 Guardar resultado
+
+          </button>
+
+
+
+          <button
+            class="btn-vermelho"
+            onclick="apagarJogo(${jogo.id})"
+          >
+
+            🗑️ Apagar jogo
+
+          </button>
+
+        `;
+
+
+
+        lista.appendChild(
+          div
+        );
+
+      }
+    );
+
+  }
+
+
+
+  // ==========================================
+  // GUARDAR RESULTADO
+  // ==========================================
+
+  async function guardarResultado(
+    id
+  ) {
+
+
+    const pontosCasa =
+      document.getElementById(
+        `casa-${id}`
+      ).value;
+
+
+    const pontosFora =
+      document.getElementById(
+        `fora-${id}`
+      ).value;
+
+
+    const estado =
+      document.getElementById(
+        `estado-${id}`
+      ).value;
+
+
+
+    if (
+      pontosCasa === "" ||
+      pontosFora === ""
+    ) {
+
+      alert(
+        "⚠️ Coloca os dois resultados."
+      );
+
+      return;
+
+    }
+
+
+
+    const { data, error } =
+      await clienteSupabase
+
+        .from("jogos")
+
+        .update({
+
+          pontos_casa:
+            Number(pontosCasa),
+
+          pontos_fora:
+            Number(pontosFora),
+
+          estado:
+            estado
+
+        })
+
+        .eq(
+          "id",
+          id
+        )
+
+        .select()
+
+        .single();
+
+
+
+    if (error) {
+
+      console.error(
+        "Erro ao guardar resultado:",
+        error
+      );
+
+
+      alert(
+        "❌ Erro ao guardar o resultado:\n\n" +
+        error.message
+      );
+
+
+      return;
+
+    }
+
+
+
+    alert(
+
+      "✅ Resultado guardado com sucesso!\n\n" +
+
+      `${data.pontos_casa} - ${data.pontos_fora}\n` +
+
+      `Estado: ${data.estado}`
+
+    );
+
+
+
+    await carregarJogos();
+
+  }
+
+
+
+  // ==========================================
+  // APAGAR JOGO
+  // ==========================================
+
+  async function apagarJogo(
+    id
+  ) {
+
+
+    const confirmar =
+      confirm(
+        "⚠️ Tens certeza que queres apagar este jogo?"
+      );
+
+
+    if (!confirmar) {
+
+      return;
+
+    }
+
+
+
+    const { error } =
+      await clienteSupabase
+
+        .from("jogos")
+
+        .delete()
+
+        .eq(
+          "id",
+          id
+        );
+
+
+
+    if (error) {
+
+      console.error(
+        "Erro ao apagar jogo:",
+        error
+      );
+
+
+      alert(
+        "❌ Erro ao apagar jogo:\n\n" +
+        error.message
+      );
+
+
+      return;
+
+    }
+
+
+
+    alert(
+      "✅ Jogo apagado com sucesso!"
+    );
+
+
+    await carregarJogos();
+
+  }
+
+
+
+  // ==========================================
+  // CARREGAR TODOS OS DADOS
+  // ==========================================
+
+  async function carregarDados() {
+
+
+    mostrarMensagem(
+      "🔄 A ligar ao Supabase..."
+    );
+
+
+    try {
+
+
+      await carregarEquipas();
+
+
+      await carregarJogos();
+
+
+      mostrarMensagem(
+
+        "🟢 Supabase conectado! Dados atualizados.",
+
+        "sucesso"
+
+      );
+
+
+    }
+
+    catch (error) {
+
+
+      console.error(
+        "Erro ao carregar dados:",
+        error
+      );
+
+
+      mostrarMensagem(
+
+        "🔴 Erro ao ligar ao Supabase. Verifica as permissões das tabelas.",
+
+        "erro"
+
+      );
+
+    }
+
+  }
+
+
+
+  // ==========================================
+  // INICIAR PAINEL
+  // ==========================================
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+      carregarDados();
+
+    }
+  );
+
+
+</script>
+
+
+</body>
+          </html>
