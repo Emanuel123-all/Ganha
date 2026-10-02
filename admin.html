@@ -9,6 +9,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
+
     body {
       font-family: Arial, sans-serif;
       background: #f2f4f7;
@@ -44,10 +45,42 @@
       margin: 5px;
     }
 
+    button:hover {
+      opacity: 0.9;
+    }
+
     .equipa,
     .jogo {
-      padding: 12px;
+      padding: 15px;
       border-bottom: 1px solid #ddd;
+    }
+
+    .jogo {
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #fafafa;
+    }
+
+    .resultado {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .resultado input {
+      width: 55px;
+      padding: 8px;
+      font-size: 18px;
+      text-align: center;
+      border: 1px solid #aaa;
+      border-radius: 6px;
+    }
+
+    .guardar {
+      background: #198754;
     }
 
     .sucesso {
@@ -65,6 +98,17 @@
       font-weight: bold;
       margin: 15px;
     }
+
+    .estado {
+      margin-top: 8px;
+    }
+
+    select {
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #aaa;
+    }
+
   </style>
 </head>
 
@@ -76,24 +120,51 @@
     A ligar ao banco de dados...
   </div>
 
+
+  <!-- ========================================== -->
+  <!-- EQUIPAS -->
+  <!-- ========================================== -->
+
   <div class="caixa">
+
     <h2>⚽ Equipas</h2>
+
     <div id="listaEquipas">
       A carregar equipas...
     </div>
+
   </div>
 
+
+  <!-- ========================================== -->
+  <!-- JOGOS -->
+  <!-- ========================================== -->
+
   <div class="caixa">
+
     <h2>📅 Jogos</h2>
+
     <div id="listaJogos">
       A carregar jogos...
     </div>
+
   </div>
 
+
+  <!-- ========================================== -->
+  <!-- ATUALIZAR -->
+  <!-- ========================================== -->
+
   <div class="caixa">
+
     <h2>🔄 Atualizar</h2>
-    <button onclick="carregarDados()">Atualizar dados</button>
+
+    <button onclick="carregarDados()">
+      🔄 Atualizar dados
+    </button>
+
   </div>
+
 
   <script>
 
@@ -105,7 +176,8 @@
       "https://ezszalkllbumkpobuilc.supabase.co";
 
     const SUPABASE_KEY =
-      "sb_publishable_kC3NtuituZzsy2DtCzDI0w_i7-zyWC2";
+      "COLOCA_AQUI_A_TUA_PUBLISHABLE_KEY";
+
 
     const clienteSupabase = window.supabase.createClient(
       SUPABASE_URL,
@@ -114,224 +186,375 @@
 
 
     // ==========================================
-// CARREGAR EQUIPAS
-// ==========================================
+    // CARREGAR EQUIPAS
+    // ==========================================
 
-async function carregarEquipas() {
+    async function carregarEquipas() {
 
-  const { data, error } = await clienteSupabase
-    .from("equipas")
-    .select("*")
-    .order("id");
+      const { data, error } = await clienteSupabase
+        .from("equipas")
+        .select("*")
+        .order("id");
 
-  if (error) {
+      if (error) {
 
-    console.error("Erro nas equipas:", error);
+        console.error("Erro nas equipas:", error);
 
-    document.getElementById("listaEquipas").innerHTML =
-      '<p class="erro">❌ Erro ao carregar as equipas.</p>';
+        document.getElementById("listaEquipas").innerHTML =
+          '<p class="erro">❌ Erro ao carregar as equipas.</p>';
 
-    throw error;
-  }
+        throw error;
+      }
 
-  let html = "";
 
-  if (!data || data.length === 0) {
+      let html = "";
 
-    html = "<p>Nenhuma equipa encontrada.</p>";
 
-  } else {
+      if (!data || data.length === 0) {
 
-    data.forEach(equipa => {
+        html = "<p>Nenhuma equipa encontrada.</p>";
 
-      html += `
-        <div class="equipa">
+      } else {
 
-          <strong>${equipa.id}. ${equipa.nome}</strong>
+        data.forEach(equipa => {
 
-          <br>
+          html += `
+            <div class="equipa">
 
-          Grupo: ${equipa.grupo || "-"}
+              <strong>
+                ${equipa.id}. ${equipa.nome}
+              </strong>
 
-          <br>
+              <br>
 
-          Cor/estado: ${equipa.cor || "normal"}
+              Grupo:
+              ${equipa.grupo || "-"}
 
-        </div>
-      `;
+              <br>
 
-    });
-  }
+              Cor/estado:
+              ${equipa.cor || "normal"}
 
-  document.getElementById("listaEquipas").innerHTML = html;
-}
+            </div>
+          `;
 
+        });
+      }
 
-// ==========================================
-// CARREGAR JOGOS
-// ==========================================
 
-async function carregarJogos() {
+      document.getElementById("listaEquipas").innerHTML = html;
 
-  const { data: jogos, error: erroJogos } = await clienteSupabase
-    .from("jogos")
-    .select(`
-      id,
-      equipa_casa_id,
-      equipa_fora_id,
-      data_jogo,
-      hora_jogo,
-      local,
-      pontos_casa,
-      pontos_fora,
-      estado
-    `)
-    .order("data_jogo", { ascending: true });
-
-  if (erroJogos) {
-
-    console.error("Erro nos jogos:", erroJogos);
-
-    document.getElementById("listaJogos").innerHTML =
-      '<p class="erro">❌ Erro ao carregar os jogos.</p>';
-
-    throw erroJogos;
-  }
-
-
-  // Buscar os nomes das equipas
-
-  const { data: equipas, error: erroEquipas } = await clienteSupabase
-    .from("equipas")
-    .select("id, nome");
-
-  if (erroEquipas) {
-
-    console.error("Erro nas equipas:", erroEquipas);
-
-    document.getElementById("listaJogos").innerHTML =
-      '<p class="erro">❌ Erro ao carregar as equipas dos jogos.</p>';
-
-    throw erroEquipas;
-  }
-
-
-  let html = "";
-
-
-  if (!jogos || jogos.length === 0) {
-
-    html = "<p>Nenhum jogo encontrado.</p>";
-
-  } else {
-
-    jogos.forEach(jogo => {
-
-      const equipaCasa = equipas.find(
-        equipa => equipa.id === jogo.equipa_casa_id
-      );
-
-      const equipaFora = equipas.find(
-        equipa => equipa.id === jogo.equipa_fora_id
-      );
-
-
-      html += `
-        <div class="jogo">
-
-          <strong>
-            ${equipaCasa ? equipaCasa.nome : "Equipa desconhecida"}
-            🆚
-            ${equipaFora ? equipaFora.nome : "Equipa desconhecida"}
-          </strong>
-
-          <br><br>
-
-          📅 Data: ${jogo.data_jogo || "-"}
-
-          <br>
-
-          🕐 Hora: ${jogo.hora_jogo || "-"}
-
-          <br>
-
-          📍 Local: ${jogo.local || "-"}
-
-          <br>
-
-          🏀 Resultado:
-          ${jogo.pontos_casa ?? 0}
-          -
-          ${jogo.pontos_fora ?? 0}
-
-          <br>
-
-          📌 Estado:
-          ${jogo.estado || "agendado"}
-
-        </div>
-      `;
-
-    });
-  }
-
-
-  document.getElementById("listaJogos").innerHTML = html;
-}
-
-
-// ==========================================
-// CARREGAR TODOS OS DADOS
-// ==========================================
-
-async function carregarDados() {
-
-  try {
-
-    document.getElementById("listaEquipas").innerHTML =
-      "<p>⏳ A carregar equipas...</p>";
-
-    document.getElementById("listaJogos").innerHTML =
-      "<p>⏳ A carregar jogos...</p>";
-
-
-    await carregarEquipas();
-
-    await carregarJogos();
-
-
-    const mensagem = document.getElementById("mensagem");
-
-    if (mensagem) {
-
-      mensagem.innerHTML =
-        "✅ Dados carregados com sucesso!";
-
-      mensagem.className = "sucesso";
     }
 
 
-  } catch (error) {
+    // ==========================================
+    // CARREGAR JOGOS
+    // ==========================================
 
-    console.error("Erro ao carregar dados:", error);
+    async function carregarJogos() {
+
+      const { data: jogos, error: erroJogos } =
+        await clienteSupabase
+          .from("jogos")
+          .select(`
+            id,
+            equipa_casa_id,
+            equipa_fora_id,
+            data_jogo,
+            hora_jogo,
+            local,
+            pontos_casa,
+            pontos_fora,
+            estado
+          `)
+          .order("data_jogo", { ascending: true });
 
 
-    const mensagem = document.getElementById("mensagem");
+      if (erroJogos) {
 
-    if (mensagem) {
+        console.error("Erro nos jogos:", erroJogos);
 
-      mensagem.innerHTML =
-        "❌ Não foi possível ligar ao Supabase.";
+        document.getElementById("listaJogos").innerHTML =
+          '<p class="erro">❌ Erro ao carregar os jogos.</p>';
 
-      mensagem.className = "erro";
+        throw erroJogos;
+      }
+
+
+      // Buscar nomes das equipas
+
+      const { data: equipas, error: erroEquipas } =
+        await clienteSupabase
+          .from("equipas")
+          .select("id, nome");
+
+
+      if (erroEquipas) {
+
+        console.error("Erro nas equipas:", erroEquipas);
+
+        document.getElementById("listaJogos").innerHTML =
+          '<p class="erro">❌ Erro ao carregar as equipas dos jogos.</p>';
+
+        throw erroEquipas;
+      }
+
+
+      let html = "";
+
+
+      if (!jogos || jogos.length === 0) {
+
+        html = "<p>Nenhum jogo encontrado.</p>";
+
+      } else {
+
+        jogos.forEach(jogo => {
+
+          const equipaCasa = equipas.find(
+            equipa => equipa.id === jogo.equipa_casa_id
+          );
+
+
+          const equipaFora = equipas.find(
+            equipa => equipa.id === jogo.equipa_fora_id
+          );
+
+
+          html += `
+            <div class="jogo">
+
+              <strong>
+
+                ${equipaCasa
+                  ? equipaCasa.nome
+                  : "Equipa desconhecida"}
+
+                🆚
+
+                ${equipaFora
+                  ? equipaFora.nome
+                  : "Equipa desconhecida"}
+
+              </strong>
+
+              <br><br>
+
+
+              📅 Data:
+              ${jogo.data_jogo || "-"}
+
+              <br>
+
+              🕐 Hora:
+              ${jogo.hora_jogo || "-"}
+
+              <br>
+
+              📍 Local:
+              ${jogo.local || "-"}
+
+
+              <div class="resultado">
+
+                <strong>
+                  Resultado:
+                </strong>
+
+                <input
+                  type="number"
+                  id="casa-${jogo.id}"
+                  min="0"
+                  value="${jogo.pontos_casa ?? 0}"
+                >
+
+                <strong>
+                  -
+                </strong>
+
+                <input
+                  type="number"
+                  id="fora-${jogo.id}"
+                  min="0"
+                  value="${jogo.pontos_fora ?? 0}"
+                >
+
+              </div>
+
+
+              <div class="estado">
+
+                📌 Estado:
+
+                <select id="estado-${jogo.id}">
+
+                  <option
+                    value="agendado"
+                    ${jogo.estado === "agendado" ? "selected" : ""}
+                  >
+                    Agendado
+                  </option>
+
+                  <option
+                    value="em andamento"
+                    ${jogo.estado === "em andamento" ? "selected" : ""}
+                  >
+                    Em andamento
+                  </option>
+
+                  <option
+                    value="terminado"
+                    ${jogo.estado === "terminado" ? "selected" : ""}
+                  >
+                    Terminado
+                  </option>
+
+                </select>
+
+              </div>
+
+
+              <button
+                class="guardar"
+                onclick="guardarResultado(${jogo.id})"
+              >
+                💾 Guardar resultado
+              </button>
+
+            </div>
+          `;
+
+        });
+      }
+
+
+      document.getElementById("listaJogos").innerHTML = html;
+
     }
 
-  }
-}
+
+    // ==========================================
+    // GUARDAR RESULTADO
+    // ==========================================
+
+    async function guardarResultado(id) {
+
+      const pontosCasa =
+        document.getElementById(`casa-${id}`).value;
+
+      const pontosFora =
+        document.getElementById(`fora-${id}`).value;
+
+      const estado =
+        document.getElementById(`estado-${id}`).value;
 
 
-// ==========================================
-// INICIAR PAINEL
-// ==========================================
+      if (pontosCasa === "" || pontosFora === "") {
 
-carregarDados();
+        alert("⚠️ Coloca os dois resultados.");
+
+        return;
+      }
+
+
+      const { error } = await clienteSupabase
+        .from("jogos")
+        .update({
+
+          pontos_casa: Number(pontosCasa),
+
+          pontos_fora: Number(pontosFora),
+
+          estado: estado
+
+        })
+        .eq("id", id);
+
+
+      if (error) {
+
+        console.error("Erro ao guardar resultado:", error);
+
+        alert(
+          "❌ Não foi possível guardar o resultado.\n\n" +
+          "Verifica as permissões da tabela jogos no Supabase."
+        );
+
+        return;
+      }
+
+
+      alert("✅ Resultado guardado com sucesso!");
+
+
+      await carregarJogos();
+
+    }
+
+
+    // ==========================================
+    // CARREGAR TODOS OS DADOS
+    // ==========================================
+
+    async function carregarDados() {
+
+      try {
+
+        document.getElementById("mensagem").innerHTML =
+          "⏳ A carregar dados...";
+
+
+        document.getElementById("mensagem").className = "";
+
+
+        document.getElementById("listaEquipas").innerHTML =
+          "<p>⏳ A carregar equipas...</p>";
+
+
+        document.getElementById("listaJogos").innerHTML =
+          "<p>⏳ A carregar jogos...</p>";
+
+
+        await carregarEquipas();
+
+        await carregarJogos();
+
+
+        document.getElementById("mensagem").innerHTML =
+          "✅ Dados carregados com sucesso!";
+
+        document.getElementById("mensagem").className =
+          "sucesso";
+
+      }
+
+
+      catch (error) {
+
+        console.error(
+          "Erro ao carregar dados:",
+          error
+        );
+
+
+        document.getElementById("mensagem").innerHTML =
+          "❌ Não foi possível carregar os dados.";
+
+        document.getElementById("mensagem").className =
+          "erro";
+
+      }
+
+    }
+
+
+    // ==========================================
+    // INICIAR PAINEL
+    // ==========================================
+
+    carregarDados();
+
+  </script>
+
+</body>
+</html>
