@@ -6,10 +6,7 @@
 
   <title>Interclasse 2026 | Pomba D'Amizade</title>
 
-  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <!-- Configuração do Supabase -->
   <script src="config.js"></script>
 
   <style>
@@ -206,7 +203,6 @@
       🔄 A carregar dados...
     </div>
 
-    <!-- CLASSIFICAÇÃO -->
     <section class="card">
 
       <h2>📊 Classificação</h2>
@@ -231,11 +227,13 @@
           </thead>
 
           <tbody id="classificacao">
+
             <tr>
               <td colspan="10" class="vazio">
                 A carregar classificação...
               </td>
             </tr>
+
           </tbody>
 
         </table>
@@ -244,8 +242,6 @@
 
     </section>
 
-
-    <!-- JOGOS -->
     <section class="card">
 
       <h2>⚽ Jogos</h2>
@@ -262,7 +258,6 @@
 
   </main>
 
-
   <footer>
     Interclasse 2026 — Colégio Pomba D'Amizade
     <br>
@@ -272,23 +267,11 @@
 
   <script>
 
-    /*
-      ============================================
-      CONEXÃO COM SUPABASE
-      ============================================
-    */
-
     const clienteSupabase = window.supabase.createClient(
       SUPABASE_URL,
       SUPABASE_ANON_KEY
     );
 
-
-    /*
-      ============================================
-      ELEMENTOS DA PÁGINA
-      ============================================
-    */
 
     const tabelaClassificacao =
       document.getElementById("classificacao");
@@ -300,474 +283,346 @@
       document.getElementById("status");
 
 
-    /*
-      ============================================
-      CARREGAR CLASSIFICAÇÃO
-      ============================================
-    */
-
     async function carregarClassificacao() {
 
-      try {
+      const { data: equipas, error: erroEquipas } =
+        await clienteSupabase
+          .from("equipas")
+          .select("id, nome");
 
-        /*
-          Buscar equipas
-        */
-
-        const { data: equipas, error: erroEquipas } =
-          await clienteSupabase
-            .from("equipas")
-            .select("id, nome");
-
-        if (erroEquipas) {
-          throw erroEquipas;
-        }
-
-
-        /*
-          Buscar classificação
-        */
-
-        const { data: classificacao, error: erroClassificacao } =
-          await clienteSupabase
-            .from("classificacao")
-            .select(`
-              equipa_id,
-              jogos,
-              vitorias,
-              empates,
-              derrotas,
-              pontos_marcados,
-              pontos_sofridos,
-              pontos
-            `);
-
-        if (erroClassificacao) {
-          throw erroClassificacao;
-        }
-
-
-        /*
-          Juntar o nome da equipa
-          com os dados da classificação
-        */
-
-        const dados = classificacao.map(item => {
-
-          const equipa =
-            equipas.find(e => e.id === item.equipa_id);
-
-          const gm =
-            Number(item.pontos_marcados || 0);
-
-          const gs =
-            Number(item.pontos_sofridos || 0);
-
-          const sg = gm - gs;
-
-          return {
-
-            equipa_id: item.equipa_id,
-
-            nome:
-              equipa ? equipa.nome : "Equipa",
-
-            jogos:
-              Number(item.jogos || 0),
-
-            vitorias:
-              Number(item.vitorias || 0),
-
-            empates:
-              Number(item.empates || 0),
-
-            derrotas:
-              Number(item.derrotas || 0),
-
-            gm: gm,
-
-            gs: gs,
-
-            sg: sg,
-
-            pontos:
-              Number(item.pontos || 0)
-          };
-
-        });
-
-
-        /*
-          Ordenação:
-
-          1º Pontos
-          2º Saldo de golos
-          3º Golos marcados
-        */
-
-        dados.sort((a, b) => {
-
-          if (b.pontos !== a.pontos) {
-            return b.pontos - a.pontos;
-          }
-
-          if (b.sg !== a.sg) {
-            return b.sg - a.sg;
-          }
-
-          return b.gm - a.gm;
-
-        });
-
-
-        /*
-          Se não houver equipas
-        */
-
-        if (dados.length === 0) {
-
-          tabelaClassificacao.innerHTML = `
-            <tr>
-              <td colspan="10" class="vazio">
-                Nenhuma equipa encontrada.
-              </td>
-            </tr>
-          `;
-
-          return;
-        }
-
-
-        /*
-          Construir tabela
-        */
-
-        tabelaClassificacao.innerHTML = "";
-
-
-        dados.forEach((equipa, index) => {
-
-          const linha =
-            document.createElement("tr");
-
-          linha.innerHTML = `
-
-            <td class="posicao">
-              ${index + 1}
-            </td>
-
-            <td class="equipa">
-              ${escaparHTML(equipa.nome)}
-            </td>
-
-            <td>
-              ${equipa.jogos}
-            </td>
-
-            <td>
-              ${equipa.vitorias}
-            </td>
-
-            <td>
-              ${equipa.empates}
-            </td>
-
-            <td>
-              ${equipa.derrotas}
-            </td>
-
-            <td>
-              ${equipa.gm}
-            </td>
-
-            <td>
-              ${equipa.gs}
-            </td>
-
-            <td>
-              ${equipa.sg}
-            </td>
-
-            <td class="pontos">
-              ${equipa.pontos}
-            </td>
-
-          `;
-
-          tabelaClassificacao.appendChild(linha);
-
-        });
-
+      if (erroEquipas) {
+        throw erroEquipas;
       }
 
-      catch (erro) {
 
-        console.error(
-          "Erro ao carregar classificação:",
-          erro
-        );
+      const { data: classificacao, error: erroClassificacao } =
+        await clienteSupabase
+          .from("classificacao")
+          .select(`
+            equipa_id,
+            jogos,
+            vitorias,
+            empates,
+            derrotas,
+            pontos_marcados,
+            pontos_sofridos,
+            pontos
+          `);
 
-        tabelaClassificacao.innerHTML = `
+      if (erroClassificacao) {
+        throw erroClassificacao;
+      }
 
-          <tr>
-            <td colspan="10" class="vazio">
-              ❌ Não foi possível carregar a classificação.
-            </td>
-          </tr>
+
+      const dados = classificacao.map(item => {
+
+        const equipa =
+          equipas.find(e => e.id === item.equipa_id);
+
+        const gm =
+          Number(item.pontos_marcados || 0);
+
+        const gs =
+          Number(item.pontos_sofridos || 0);
+
+        return {
+
+          nome: equipa
+            ? equipa.nome
+            : "Equipa",
+
+          jogos:
+            Number(item.jogos || 0),
+
+          vitorias:
+            Number(item.vitorias || 0),
+
+          empates:
+            Number(item.empates || 0),
+
+          derrotas:
+            Number(item.derrotas || 0),
+
+          gm: gm,
+
+          gs: gs,
+
+          sg: gm - gs,
+
+          pontos:
+            Number(item.pontos || 0)
+
+        };
+
+      });
+
+
+      dados.sort((a, b) => {
+
+        if (b.pontos !== a.pontos) {
+          return b.pontos - a.pontos;
+        }
+
+        if (b.sg !== a.sg) {
+          return b.sg - a.sg;
+        }
+
+        return b.gm - a.gm;
+
+      });
+
+
+      tabelaClassificacao.innerHTML = "";
+
+
+      dados.forEach((equipa, index) => {
+
+        const linha =
+          document.createElement("tr");
+
+        linha.innerHTML = `
+
+          <td class="posicao">
+            ${index + 1}
+          </td>
+
+          <td class="equipa">
+            ${escaparHTML(equipa.nome)}
+          </td>
+
+          <td>
+            ${equipa.jogos}
+          </td>
+
+          <td>
+            ${equipa.vitorias}
+          </td>
+
+          <td>
+            ${equipa.empates}
+          </td>
+
+          <td>
+            ${equipa.derrotas}
+          </td>
+
+          <td>
+            ${equipa.gm}
+          </td>
+
+          <td>
+            ${equipa.gs}
+          </td>
+
+          <td>
+            ${equipa.sg}
+          </td>
+
+          <td class="pontos">
+            ${equipa.pontos}
+          </td>
 
         `;
 
-        throw erro;
+        tabelaClassificacao.appendChild(linha);
 
-      }
+      });
 
     }
 
 
-    /*
-      ============================================
-      CARREGAR JOGOS
-      ============================================
-    */
-
     async function carregarJogos() {
 
-      try {
-
-        const { data: jogos, error } =
-          await clienteSupabase
-            .from("jogos")
-            .select(`
-              id,
-              equipa_casa_id,
-              equipa_fora_id,
-              data_jogo,
-              hora_jogo,
-              local,
-              pontos_casa,
-              pontos_fora,
-              estado
-            `)
-            .order("data_jogo", {
-              ascending: true
-            })
-            .order("hora_jogo", {
-              ascending: true
-            });
+      const { data: jogos, error } =
+        await clienteSupabase
+          .from("jogos")
+          .select(`
+            id,
+            equipa_casa_id,
+            equipa_fora_id,
+            data_jogo,
+            hora_jogo,
+            local,
+            pontos_casa,
+            pontos_fora,
+            estado
+          `)
+          .order("data_jogo", {
+            ascending: true
+          })
+          .order("hora_jogo", {
+            ascending: true
+          });
 
 
-        if (error) {
-          throw error;
-        }
-
-
-        const { data: equipas, error: erroEquipas } =
-          await clienteSupabase
-            .from("equipas")
-            .select("id, nome");
-
-
-        if (erroEquipas) {
-          throw erroEquipas;
-        }
-
-
-        if (!jogos || jogos.length === 0) {
-
-          listaJogos.innerHTML = `
-
-            <div class="vazio">
-              Nenhum jogo encontrado.
-            </div>
-
-          `;
-
-          return;
-        }
-
-
-        listaJogos.innerHTML = "";
-
-
-        jogos.forEach(jogo => {
-
-          const equipaCasa =
-            equipas.find(
-              e => e.id === jogo.equipa_casa_id
-            );
-
-          const equipaFora =
-            equipas.find(
-              e => e.id === jogo.equipa_fora_id
-            );
-
-
-          const nomeCasa =
-            equipaCasa
-              ? equipaCasa.nome
-              : "Equipa";
-
-          const nomeFora =
-            equipaFora
-              ? equipaFora.nome
-              : "Equipa";
-
-
-          const terminado =
-            jogo.estado === "terminado";
-
-
-          const resultado =
-            terminado
-
-              ? `${jogo.pontos_casa} - ${jogo.pontos_fora}`
-
-              : "vs";
-
-
-          const data =
-            jogo.data_jogo
-              ? formatarData(jogo.data_jogo)
-              : "";
-
-
-          const hora =
-            jogo.hora_jogo
-              ? jogo.hora_jogo.substring(0, 5)
-              : "";
-
-
-          const div =
-            document.createElement("div");
-
-          div.className = "jogo";
-
-
-          div.innerHTML = `
-
-            <div class="equipas-jogo">
-
-              <div>
-                ${escaparHTML(nomeCasa)}
-              </div>
-
-              <div>
-                ${escaparHTML(nomeFora)}
-              </div>
-
-              ${
-                data || hora
-                  ? `<small>
-                       ${data}
-                       ${hora ? " • " + hora : ""}
-                     </small>`
-                  : ""
-              }
-
-              ${
-                jogo.local
-                  ? `<small>
-                       📍 ${escaparHTML(jogo.local)}
-                     </small>`
-                  : ""
-              }
-
-            </div>
-
-
-            <div class="resultado">
-              ${resultado}
-            </div>
-
-
-            <div>
-
-              <span class="estado ${
-                terminado
-                  ? "terminado"
-                  : "agendado"
-              }">
-
-                ${
-                  terminado
-                    ? "Terminado"
-                    : "Agendado"
-                }
-
-              </span>
-
-            </div>
-
-          `;
-
-
-          listaJogos.appendChild(div);
-
-        });
-
+      if (error) {
+        throw error;
       }
 
-      catch (erro) {
 
-        console.error(
-          "Erro ao carregar jogos:",
-          erro
-        );
+      const { data: equipas, error: erroEquipas } =
+        await clienteSupabase
+          .from("equipas")
+          .select("id, nome");
+
+
+      if (erroEquipas) {
+        throw erroEquipas;
+      }
+
+
+      if (!jogos || jogos.length === 0) {
 
         listaJogos.innerHTML = `
-
           <div class="vazio">
-            ❌ Não foi possível carregar os jogos.
+            Nenhum jogo encontrado.
+          </div>
+        `;
+
+        return;
+      }
+
+
+      listaJogos.innerHTML = "";
+
+
+      jogos.forEach(jogo => {
+
+        const equipaCasa =
+          equipas.find(
+            e => e.id === jogo.equipa_casa_id
+          );
+
+        const equipaFora =
+          equipas.find(
+            e => e.id === jogo.equipa_fora_id
+          );
+
+
+        const nomeCasa =
+          equipaCasa
+            ? equipaCasa.nome
+            : "Equipa";
+
+        const nomeFora =
+          equipaFora
+            ? equipaFora.nome
+            : "Equipa";
+
+
+        const terminado =
+          jogo.estado === "terminado";
+
+
+        const resultado =
+          terminado
+            ? `${jogo.pontos_casa} - ${jogo.pontos_fora}`
+            : "vs";
+
+
+        const data =
+          jogo.data_jogo
+            ? formatarData(jogo.data_jogo)
+            : "";
+
+
+        const hora =
+          jogo.hora_jogo
+            ? jogo.hora_jogo.substring(0, 5)
+            : "";
+
+
+        const div =
+          document.createElement("div");
+
+        div.className = "jogo";
+
+
+        div.innerHTML = `
+
+          <div class="equipas-jogo">
+
+            <div>
+              ${escaparHTML(nomeCasa)}
+            </div>
+
+            <div>
+              ${escaparHTML(nomeFora)}
+            </div>
+
+            ${
+              data || hora
+                ? `<small>
+                     ${data}
+                     ${hora ? " • " + hora : ""}
+                   </small>`
+                : ""
+            }
+
+            ${
+              jogo.local
+                ? `<small>
+                     📍 ${escaparHTML(jogo.local)}
+                   </small>`
+                : ""
+            }
+
+          </div>
+
+
+          <div class="resultado">
+            ${resultado}
+          </div>
+
+
+          <div>
+
+            <span class="estado ${
+              terminado
+                ? "terminado"
+                : "agendado"
+            }">
+
+              ${
+                terminado
+                  ? "Terminado"
+                  : "Agendado"
+              }
+
+            </span>
+
           </div>
 
         `;
 
-        throw erro;
 
-      }
+        listaJogos.appendChild(div);
+
+      });
 
     }
 
-
-    /*
-      ============================================
-      DATA
-      ============================================
-    */
 
     function formatarData(data) {
 
-      try {
+      const partes =
+        data.split("-");
 
-        const partes =
-          data.split("-");
-
-        if (partes.length !== 3) {
-          return data;
-        }
-
-        return `${partes[2]}/${partes[1]}/${partes[0]}`;
-
-      }
-
-      catch {
-
+      if (partes.length !== 3) {
         return data;
-
       }
+
+      return `${partes[2]}/${partes[1]}/${partes[0]}`;
 
     }
 
 
-    /*
-      ============================================
-      SEGURANÇA DO TEXTO
-      ============================================
-    */
-
     function escaparHTML(texto) {
 
-      if (texto === null || texto === undefined) {
+      if (
+        texto === null ||
+        texto === undefined
+      ) {
         return "";
       }
 
@@ -781,15 +636,10 @@
     }
 
 
-    /*
-      ============================================
-      CARREGAR TUDO
-      ============================================
-    */
-
     async function carregarTudo() {
 
       status.className = "status";
+
       status.textContent =
         "🔄 A atualizar dados...";
 
@@ -812,6 +662,8 @@
 
       catch (erro) {
 
+        console.error(erro);
+
         status.className =
           "status erro";
 
@@ -823,23 +675,8 @@
     }
 
 
-    /*
-      ============================================
-      PRIMEIRO CARREGAMENTO
-      ============================================
-    */
-
     carregarTudo();
 
-
-    /*
-      ============================================
-      ATUALIZAÇÃO AUTOMÁTICA
-      ============================================
-      
-      A cada 10 segundos o site consulta
-      novamente o Supabase.
-    */
 
     setInterval(() => {
 
@@ -850,4 +687,4 @@
   </script>
 
 </body>
-                  </html>
+</html>
