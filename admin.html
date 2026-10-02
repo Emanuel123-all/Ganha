@@ -1533,45 +1533,80 @@
       await clienteSupabase
 
         .from("jogos")
+// ==========================================
+// GUARDAR RESULTADO
+// ==========================================
 
-        .delete()
+async function guardarResultado(id) {
 
-        .eq(
-          "id",
-          id
-        );
+  const idJogo = Number(id);
 
-
-
-    if (error) {
-
-      console.error(
-        "Erro ao apagar jogo:",
-        error
-      );
-
-
-      alert(
-        "❌ Erro ao apagar jogo:\n\n" +
-        error.message
-      );
-
-
-      return;
-
-    }
-
-
-
-    alert(
-      "✅ Jogo apagado com sucesso!"
-    );
-
-
-    await carregarJogos();
-
+  if (!idJogo) {
+    alert("❌ ID do jogo inválido.");
+    return;
   }
 
+  const campoCasa = document.getElementById(`casa-${idJogo}`);
+  const campoFora = document.getElementById(`fora-${idJogo}`);
+  const campoEstado = document.getElementById(`estado-${idJogo}`);
+
+  if (!campoCasa || !campoFora || !campoEstado) {
+    alert("❌ Não foi possível encontrar os campos deste jogo.");
+    return;
+  }
+
+  const pontosCasa = Number(campoCasa.value);
+  const pontosFora = Number(campoFora.value);
+  const estado = campoEstado.value;
+
+  if (
+    campoCasa.value === "" ||
+    campoFora.value === ""
+  ) {
+    alert("⚠️ Coloca os dois resultados.");
+    return;
+  }
+
+  if (
+    pontosCasa < 0 ||
+    pontosFora < 0
+  ) {
+    alert("⚠️ Os pontos não podem ser negativos.");
+    return;
+  }
+
+  const { error } = await clienteSupabase
+    .from("jogos")
+    .update({
+      pontos_casa: pontosCasa,
+      pontos_fora: pontosFora,
+      estado: estado
+    })
+    .eq("id", idJogo);
+
+  if (error) {
+
+    console.error(
+      "Erro ao guardar resultado:",
+      error
+    );
+
+    alert(
+      "❌ Erro ao guardar o resultado:\n\n" +
+      error.message
+    );
+
+    return;
+  }
+
+  alert(
+    "✅ Resultado guardado com sucesso!\n\n" +
+    pontosCasa + " - " + pontosFora +
+    "\nEstado: " + estado
+  );
+
+  await carregarJogos();
+  }
 
 
   // ==========================================
