@@ -439,60 +439,73 @@
 
     async function guardarResultado(id) {
 
-      const pontosCasa =
-        document.getElementById(`casa-${id}`).value;
+  const pontosCasa =
+    document.getElementById(`casa-${id}`).value;
 
-      const pontosFora =
-        document.getElementById(`fora-${id}`).value;
+  const pontosFora =
+    document.getElementById(`fora-${id}`).value;
 
-      const estado =
-        document.getElementById(`estado-${id}`).value;
-
-
-      if (pontosCasa === "" || pontosFora === "") {
-
-        alert("⚠️ Coloca os dois resultados.");
-
-        return;
-      }
+  const estado =
+    document.getElementById(`estado-${id}`).value;
 
 
-      const { error } = await clienteSupabase
-        .from("jogos")
-        .update({
+  if (pontosCasa === "" || pontosFora === "") {
 
-          pontos_casa: Number(pontosCasa),
+    alert("⚠️ Coloca os dois resultados.");
 
-          pontos_fora: Number(pontosFora),
-
-          estado: estado
-
-        })
-        .eq("id", id);
+    return;
+  }
 
 
-      if (error) {
-
-        console.error("Erro ao guardar resultado:", error);
-
-        alert(
-          "❌ Não foi possível guardar o resultado.\n\n" +
-          "Verifica as permissões da tabela jogos no Supabase."
-        );
-
-        return;
-      }
-
-
-      alert("✅ Resultado guardado com sucesso!");
+  const { data, error } = await clienteSupabase
+    .from("jogos")
+    .update({
+      pontos_casa: Number(pontosCasa),
+      pontos_fora: Number(pontosFora),
+      estado: estado
+    })
+    .eq("id", id)
+    .select("id, pontos_casa, pontos_fora, estado")
+    .single();
 
 
-      await carregarJogos();
+  if (error) {
 
-    }
+    console.error("Erro ao guardar resultado:", error);
+
+    alert(
+      "❌ Erro ao guardar o resultado:\n\n" +
+      error.message
+    );
+
+    return;
+  }
 
 
-    // ==========================================
+  if (!data) {
+
+    alert(
+      "⚠️ O Supabase não atualizou nenhum jogo.\n\n" +
+      "Verifica as permissões da tabela jogos."
+    );
+
+    return;
+  }
+
+
+  console.log("Jogo atualizado:", data);
+
+
+  alert(
+    "✅ Resultado guardado com sucesso!\n\n" +
+    `${data.pontos_casa} - ${data.pontos_fora}\n` +
+    `Estado: ${data.estado}`
+  );
+
+
+  await carregarJogos();
+
+    }    // ==========================================
     // CARREGAR TODOS OS DADOS
     // ==========================================
 
