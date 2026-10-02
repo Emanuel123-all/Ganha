@@ -1,18 +1,24 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
+
   <meta charset="UTF-8">
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Painel de Administrador - Pomba D'Amizade</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <script src="config.js"></script>
 
+
   <style>
+
     * {
       box-sizing: border-box;
     }
+
 
     body {
       font-family: Arial, sans-serif;
@@ -21,6 +27,7 @@
       color: #111827;
     }
 
+
     header {
       background: #0f172a;
       color: white;
@@ -28,21 +35,25 @@
       padding: 25px 15px;
     }
 
+
     header h1 {
       margin: 0;
       font-size: 26px;
     }
+
 
     header p {
       color: #cbd5e1;
       margin-bottom: 0;
     }
 
+
     .container {
       width: 95%;
       max-width: 1000px;
       margin: 20px auto;
     }
+
 
     .caixa {
       background: white;
@@ -52,10 +63,12 @@
       box-shadow: 0 3px 12px rgba(0,0,0,0.08);
     }
 
+
     h2 {
       margin-top: 0;
       color: #0f172a;
     }
+
 
     input,
     select {
@@ -67,6 +80,7 @@
       font-size: 15px;
     }
 
+
     button {
       border: none;
       border-radius: 7px;
@@ -77,25 +91,31 @@
       font-weight: bold;
     }
 
+
+    button:hover {
+      opacity: 0.88;
+    }
+
+
     .btn-principal {
       background: #0f172a;
     }
+
 
     .btn-verde {
       background: #198754;
     }
 
+
     .btn-vermelho {
       background: #dc2626;
     }
+
 
     .btn-azul {
       background: #2563eb;
     }
 
-    button:hover {
-      opacity: 0.88;
-    }
 
     .mensagem {
       padding: 12px;
@@ -106,24 +126,29 @@
       background: #e2e8f0;
     }
 
+
     .sucesso {
       background: #dcfce7;
       color: #166534;
     }
+
 
     .erro {
       background: #fee2e2;
       color: #991b1b;
     }
 
+
     .equipa {
       padding: 14px;
       border-bottom: 1px solid #e5e7eb;
     }
 
+
     .equipa:last-child {
       border-bottom: none;
     }
+
 
     .jogo {
       padding: 15px;
@@ -133,9 +158,11 @@
       background: #f8fafc;
     }
 
+
     .jogo strong {
       font-size: 16px;
     }
+
 
     .resultado {
       display: flex;
@@ -144,11 +171,13 @@
       margin-top: 12px;
     }
 
+
     .resultado input {
       width: 65px;
       text-align: center;
       font-size: 18px;
     }
+
 
     .vazio {
       color: #64748b;
@@ -156,32 +185,63 @@
       padding: 15px;
     }
 
+
     .linha {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
     }
 
+
+    .info {
+      padding: 10px;
+      margin-top: 10px;
+      background: #f8fafc;
+      border-radius: 7px;
+      font-size: 14px;
+    }
+
+
     @media (max-width: 600px) {
+
       .linha {
         grid-template-columns: 1fr;
       }
+
     }
+
   </style>
+
 </head>
+
 
 <body>
 
+
 <header>
+
   <h1>🏆 Painel de Administrador</h1>
-  <p>Interclasse 2026 — Colégio Pomba D'Amizade</p>
+
+  <p>
+    Interclasse 2026 — Colégio Pomba D'Amizade
+  </p>
+
 </header>
+
 
 <main class="container">
 
+
+  <!-- =============================== -->
+  <!-- MENSAGEM DE CONEXÃO -->
+  <!-- =============================== -->
+
   <div id="mensagem" class="mensagem">
+
     🔄 A ligar ao Supabase...
+
   </div>
+
 
 
   <!-- =============================== -->
@@ -192,11 +252,13 @@
 
     <h2>➕ Adicionar equipa</h2>
 
+
     <input
       type="text"
       id="nomeEquipa"
       placeholder="Nome da equipa"
     >
+
 
     <input
       type="text"
@@ -204,14 +266,18 @@
       placeholder="Grupo (ex.: A)"
     >
 
+
     <button
       class="btn-verde"
       onclick="adicionarEquipa()"
     >
+
       ➕ Adicionar equipa
+
     </button>
 
   </section>
+
 
 
   <!-- =============================== -->
@@ -222,11 +288,15 @@
 
     <h2>👥 Equipas</h2>
 
+
     <div id="listaEquipas">
+
       A carregar...
+
     </div>
 
   </section>
+
 
 
   <!-- =============================== -->
@@ -237,345 +307,15 @@
 
     <h2>⚽ Adicionar jogo</h2>
 
-    <div class="linha">
-
-      <div>
-        <label>Equipa da casa</label>
-
-        <select id="equipaCasa">
-          <option value="">Selecionar equipa</option>
-        </select>
-      </div>
-
-      <div>
-        <label>Equipa visitante</label>
-
-        <select id="equipaFora">
-          <option value="">Selecionar equipa</option>
-        </select>
-      </div>
-
-    </div>
 
     <div class="linha">
 
-      <div>
-        <label>Data</label>
-
-        <input
-          type="date"
-          id="dataJogo"
-        >
-      </div>
 
       <div>
-        <label>Hora</label>
 
-        <input
-          type="time"
-          id="horaJogo"
-        >
-      </div>
+        <label>
+          Equipa da casa
+        </label>
 
-    </div>
 
-    <input
-      type="text"
-      id="localJogo"
-      placeholder="Local do jogo"
-    >
-
-    <button
-      class="btn-azul"
-      onclick="adicionarJogo()"
-    >
-      ➕ Criar jogo
-    </button>
-
-  </section>
-
-
-  <!-- =============================== -->
-  <!-- JOGOS -->
-  <!-- =============================== -->
-
-  <section class="caixa">
-
-    <h2>📅 Jogos</h2>
-
-    <div id="listaJogos">
-      A carregar...
-    </div>
-
-  </section>
-
-
-  <!-- =============================== -->
-  <!-- ATUALIZAR -->
-  <!-- =============================== -->
-
-  <section class="caixa">
-
-    <button
-      class="btn-principal"
-      onclick="carregarDados()"
-    >
-      🔄 Atualizar dados
-    </button>
-
-  </section>
-
-</main>
-
-
-<script>
-
-  // ==========================================
-  // SUPABASE
-  // ==========================================
-
-  const clienteSupabase = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
-
-
-  // ==========================================
-  // MENSAGEM
-  // ==========================================
-
-  function mostrarMensagem(texto, tipo = "") {
-
-    const mensagem =
-      document.getElementById("mensagem");
-
-    mensagem.textContent = texto;
-
-    mensagem.className =
-      "mensagem " + tipo;
-
-  }
-
-
-  // ==========================================
-  // ESCAPAR HTML
-  // ==========================================
-
-  function escaparHTML(texto) {
-
-    if (texto === null || texto === undefined) {
-      return "";
-    }
-
-    return String(texto)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-
-  }
-
-
-  // ==========================================
-  // CARREGAR EQUIPAS
-  // ==========================================
-
-  async function carregarEquipas() {
-
-    const { data, error } =
-      await clienteSupabase
-        .from("equipas")
-        .select("id, nome, grupo, cor")
-        .order("id");
-
-    if (error) {
-      console.error(error);
-
-      document.getElementById("listaEquipas").innerHTML =
-        '<p class="erro">❌ Erro ao carregar equipas.</p>';
-
-      throw error;
-    }
-
-
-    const lista =
-      document.getElementById("listaEquipas");
-
-
-    if (!data || data.length === 0) {
-
-      lista.innerHTML =
-        '<p class="vazio">Nenhuma equipa cadastrada.</p>';
-
-    } else {
-
-      lista.innerHTML = "";
-
-      data.forEach(equipa => {
-
-        const div =
-          document.createElement("div");
-
-        div.className = "equipa";
-
-        div.innerHTML = `
-
-          <strong>
-            ${escaparHTML(equipa.nome)}
-          </strong>
-
-          <br>
-
-          Grupo:
-          ${escaparHTML(equipa.grupo || "-")}
-
-          <br>
-
-          Estado:
-          ${escaparHTML(equipa.cor || "normal")}
-
-          <br>
-
-          <button
-            class="btn-vermelho"
-            onclick="apagarEquipa(${equipa.id})"
-          >
-            🗑️ Apagar equipa
-          </button>
-
-        `;
-
-        lista.appendChild(div);
-
-      });
-
-    }
-
-
-    atualizarSelectsEquipas(data || []);
-
-  }
-
-
-  // ==========================================
-  // ATUALIZAR SELECTS
-  // ==========================================
-
-  function atualizarSelectsEquipas(equipas) {
-
-    const casa =
-      document.getElementById("equipaCasa");
-
-    const fora =
-      document.getElementById("equipaFora");
-
-
-    casa.innerHTML =
-      '<option value="">Selecionar equipa</option>';
-
-    fora.innerHTML =
-      '<option value="">Selecionar equipa</option>';
-
-
-    equipas.forEach(equipa => {
-
-      const nome =
-        escaparHTML(equipa.nome);
-
-
-      casa.innerHTML += `
-        <option value="${equipa.id}">
-          ${nome}
-        </option>
-      `;
-
-
-      fora.innerHTML += `
-        <option value="${equipa.id}">
-          ${nome}
-        </option>
-      `;
-
-    });
-
-  }
-
-
-  // ==========================================
-  // ADICIONAR EQUIPA
-  // ==========================================
-
-  async function adicionarEquipa() {
-
-    const nome =
-      document.getElementById("nomeEquipa")
-        .value.trim();
-
-    const grupo =
-      document.getElementById("grupoEquipa")
-        .value.trim();
-
-
-    if (!nome) {
-
-      alert("⚠️ Coloca o nome da equipa.");
-
-      return;
-    }
-
-
-    const { data, error } =
-      await clienteSupabase
-        .from("equipas")
-        .insert({
-          nome: nome,
-          grupo: grupo || null,
-          cor: "normal"
-        })
-        .select()
-        .single();
-
-
-    if (error) {
-
-      console.error(error);
-
-      alert(
-        "❌ Erro ao adicionar equipa:\n\n" +
-        error.message
-      );
-
-      return;
-    }
-
-
-    alert(
-      "✅ Equipa adicionada com sucesso!\n\n" +
-      data.nome
-    );
-
-
-    document.getElementById("nomeEquipa").value = "";
-    document.getElementById("grupoEquipa").value = "";
-
-
-    await carregarEquipas();
-
-  }
-
-
-  // ==========================================
-  // APAGAR EQUIPA
-  // ==========================================
-
-  async function apagarEquipa(id) {
-
-    const confirmar =
-      confirm(
-        "⚠️ Tens certeza que queres apagar esta equipa?\n\n" +
-        "Esta ação pode afetar jogos e classificação."
-      );
-
-
-    if (!confirmar)
+        <select
