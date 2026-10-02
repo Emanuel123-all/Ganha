@@ -1,782 +1,853 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
+  <title>Interclasse 2026 | Pomba D'Amizade</title>
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<title>Interclasse 2026 | Pomba D'Amizade</title>
+  <!-- Configuração do Supabase -->
+  <script src="config.js"></script>
 
-<meta
-    name="description"
-    content="Classificação oficial do Interclasse 2026 do Colégio Pomba D'Amizade."
->
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f1f5f9;
+      color: #111827;
+    }
 
-<script src="config.js"></script>
-
-<style>
-
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f2f4f7;
-    color: #17202a;
-}
-
-header {
-    background: linear-gradient(135deg, #075e2d, #0b8f45);
-    color: white;
-    padding: 35px 20px;
-    text-align: center;
-}
-
-header h1 {
-    margin: 0;
-    font-size: 30px;
-}
-
-header p {
-    margin: 8px 0 0;
-    opacity: .9;
-}
-
-.container {
-    width: min(1200px, 94%);
-    margin: 25px auto;
-}
-
-.card {
-    background: white;
-    border-radius: 14px;
-    padding: 20px;
-    margin-bottom: 22px;
-    box-shadow: 0 4px 15px rgba(0,0,0,.07);
-}
-
-select {
-    width: 100%;
-    padding: 13px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 16px;
-}
-
-h2 {
-    margin-top: 0;
-    color: #075e2d;
-}
-
-.table-container {
-    overflow-x: auto;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 850px;
-}
-
-th {
-    background: #075e2d;
-    color: white;
-    padding: 12px 8px;
-}
-
-td {
-    padding: 11px 8px;
-    text-align: center;
-    border-bottom: 1px solid #e5e5e5;
-}
-
-td:nth-child(2) {
-    text-align: left;
-    font-weight: bold;
-}
-
-tr:hover {
-    background: #f5faf7;
-}
-
-.position {
-    font-weight: bold;
-}
-
-.points {
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.match {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 15px;
-    padding: 15px;
-    border-bottom: 1px solid #eee;
-}
-
-.team {
-    width: 40%;
-    font-weight: bold;
-}
-
-.team:first-child {
-    text-align: right;
-}
-
-.score {
-    font-size: 20px;
-    font-weight: bold;
-    min-width: 70px;
-    text-align: center;
-}
-
-.date {
-    color: #777;
-    font-size: 13px;
-}
-
-.loading {
-    text-align: center;
-    padding: 25px;
-}
-
-.error {
-    background: #ffe5e5;
-    color: #a00000;
-    padding: 15px;
-    border-radius: 8px;
-}
-
-footer {
-    text-align: center;
-    padding: 30px;
-    color: #777;
-}
-
-.admin-link {
-    display: inline-block;
-    margin-top: 10px;
-    color: #075e2d;
-    text-decoration: none;
-    font-size: 13px;
-}
-
-@media(max-width:600px) {
+    header {
+      background: #0f172a;
+      color: white;
+      text-align: center;
+      padding: 25px 15px;
+    }
 
     header h1 {
-        font-size: 23px;
+      margin: 0;
+      font-size: 28px;
+    }
+
+    header p {
+      margin: 8px 0 0;
+      color: #cbd5e1;
+    }
+
+    .container {
+      width: 95%;
+      max-width: 1100px;
+      margin: 25px auto;
     }
 
     .card {
-        padding: 14px;
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 25px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
     }
 
-    .match {
-        font-size: 14px;
+    .card h2 {
+      margin-top: 0;
+      color: #0f172a;
     }
 
-}
+    .status {
+      text-align: center;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
 
-</style>
+    .status.ok {
+      background: #dcfce7;
+      color: #166534;
+    }
 
+    .status.erro {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 750px;
+    }
+
+    th {
+      background: #0f172a;
+      color: white;
+      padding: 12px 8px;
+      text-align: center;
+    }
+
+    td {
+      padding: 11px 8px;
+      text-align: center;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    td.equipa {
+      text-align: left;
+      font-weight: bold;
+    }
+
+    .posicao {
+      font-weight: bold;
+    }
+
+    .pontos {
+      font-weight: bold;
+      font-size: 17px;
+    }
+
+    .jogo {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .jogo:last-child {
+      border-bottom: none;
+    }
+
+    .equipas-jogo {
+      flex: 1;
+      font-weight: bold;
+    }
+
+    .resultado {
+      font-size: 20px;
+      font-weight: bold;
+      min-width: 70px;
+      text-align: center;
+    }
+
+    .estado {
+      font-size: 13px;
+      padding: 5px 9px;
+      border-radius: 6px;
+      background: #e5e7eb;
+    }
+
+    .terminado {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .agendado {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .vazio {
+      text-align: center;
+      padding: 20px;
+      color: #64748b;
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    @media (max-width: 600px) {
+
+      header h1 {
+        font-size: 22px;
+      }
+
+      .card {
+        padding: 15px;
+      }
+
+      .jogo {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<header>
-
-<h1>⚽ Colégio Pomba D'Amizade</h1>
-
-<p>Interclasse 2026</p>
-
-</header>
-
-<div class="container">
-
-<div class="card">
-
-<h2>🏆 Competição</h2>
-
-<select id="competitionSelect">
-<option>Carregando...</option>
-</select>
-
-</div>
-
-<div class="card">
-
-<h2>📊 Classificação</h2>
-
-<div id="standings">
-<div class="loading">
-A carregar classificação...
-</div>
-</div>
-
-</div>
-
-<div class="card">
-
-<h2>⚽ Resultados</h2>
-
-<div id="results">
-<div class="loading">
-A carregar resultados...
-</div>
-</div>
-
-</div>
-
-<div class="card">
-
-<h2>📅 Próximos jogos</h2>
-
-<div id="upcoming">
-<div class="loading">
-A carregar jogos...
-</div>
-</div>
-
-</div>
-
-</div>
-
-<footer>
-
-Colégio Pomba D'Amizade © 2026<br>
-
-Interclasse 2026
-
-<br>
-
-<a class="admin-link" href="admin.html">
-Área do administrador
-</a>
-
-</footer>
-
-<script>
-
-let competitions = [];
-let currentCompetition = null;
-let teams = [];
-let matches = [];
-
-const competitionSelect =
-    document.getElementById("competitionSelect");
-
-async function loadCompetitions() {
-
-    const { data, error } =
-        await db
-        .from("competitions")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-    if (error) {
-        showError(error.message);
-        return;
-    }
-
-    competitions = data || [];
-
-    competitionSelect.innerHTML = "";
-
-    if (!competitions.length) {
-
-        competitionSelect.innerHTML =
-            "<option>Nenhuma competição</option>";
-
-        return;
-    }
-
-    competitions.forEach(comp => {
-
-        const option =
-            document.createElement("option");
-
-        option.value = comp.id;
-
-        option.textContent =
-            `${comp.name} — ${comp.sport}`;
-
-        competitionSelect.appendChild(option);
-
-    });
-
-    currentCompetition = competitions[0];
-
-    await loadCompetition();
-
-}
-
-competitionSelect.addEventListener(
-    "change",
-    async function() {
-
-        currentCompetition =
-            competitions.find(
-                c => c.id === this.value
-            );
-
-        await loadCompetition();
-
-    }
-);
-
-async function loadCompetition() {
-
-    if (!currentCompetition) return;
-
-    const competitionId =
-        currentCompetition.id;
-
-    const teamsResponse =
-        await db
-        .from("teams")
-        .select("*")
-        .eq("competition_id", competitionId)
-        .order("name");
-
-    if (teamsResponse.error) {
-
-        showError(
-            teamsResponse.error.message
-        );
-
-        return;
-    }
-
-    teams = teamsResponse.data || [];
-
-    const matchesResponse =
-        await db
-        .from("matches")
-        .select("*")
-        .eq("competition_id", competitionId)
-        .order("match_date", {
-            ascending: true,
-            nullsFirst: false
-        });
-
-    if (matchesResponse.error) {
-
-        showError(
-            matchesResponse.error.message
-        );
-
-        return;
-    }
-
-    matches = matchesResponse.data || [];
-
-    renderStandings();
-
-    renderResults();
-
-    renderUpcoming();
-
-}
-
-function calculateStandings() {
-
-    const table = {};
-
-    teams.forEach(team => {
-
-        table[team.id] = {
-
-            id: team.id,
-
-            name: team.name,
-
-            pj: 0,
-
-            v: 0,
-
-            e: 0,
-
-            d: 0,
-
-            gm: 0,
-
-            gs: 0,
-
-            sg: 0,
-
-            pts: 0
-
-        };
-
-    });
-
-    matches
-    .filter(match => match.status === "played")
-    .forEach(match => {
-
-        const home =
-            table[match.home_team_id];
-
-        const away =
-            table[match.away_team_id];
-
-        if (!home || !away) return;
-
-        const hg =
-            Number(match.home_score);
-
-        const ag =
-            Number(match.away_score);
-
-        home.pj++;
-        away.pj++;
-
-        home.gm += hg;
-        home.gs += ag;
-
-        away.gm += ag;
-        away.gs += hg;
-
-        if (hg > ag) {
-
-            home.v++;
-            home.pts += 3;
-
-            away.d++;
-
-        }
-
-        else if (hg < ag) {
-
-            away.v++;
-            away.pts += 3;
-
-            home.d++;
-
-        }
-
-        else {
-
-            home.e++;
-            away.e++;
-
-            home.pts++;
-            away.pts++;
-
-        }
-
-    });
-
-    Object.values(table).forEach(team => {
-
-        team.sg =
-            team.gm - team.gs;
-
-    });
-
-    return Object.values(table).sort((a,b) => {
-
-        if (b.pts !== a.pts)
-            return b.pts - a.pts;
-
-        if (b.sg !== a.sg)
-            return b.sg - a.sg;
-
-        if (b.gm !== a.gm)
-            return b.gm - a.gm;
-
-        return a.name.localeCompare(b.name);
-
-    });
-
-}
-
-function renderStandings() {
-
-    const standings =
-        calculateStandings();
-
-    if (!standings.length) {
-
-        document.getElementById("standings")
-            .innerHTML =
-            "<p>Nenhuma equipa registada.</p>";
-
-        return;
-    }
-
-    let html = `
-
-    <div class="table-container">
-
-    <table>
-
-    <thead>
-
-    <tr>
-
-    <th>#</th>
-    <th>Turma</th>
-    <th>PJ</th>
-    <th>V</th>
-    <th>E</th>
-    <th>D</th>
-    <th>GM</th>
-    <th>GS</th>
-    <th>SG</th>
-    <th>PTS</th>
-
-    </tr>
-
-    </thead>
-
-    <tbody>
-
-    `;
-
-    standings.forEach((team, index) => {
-
-        html += `
-
-        <tr>
-
-        <td class="position">
-        ${index + 1}
-        </td>
-
-        <td>
-        ${escapeHtml(team.name)}
-        </td>
-
-        <td>${team.pj}</td>
-
-        <td>${team.v}</td>
-
-        <td>${team.e}</td>
-
-        <td>${team.d}</td>
-
-        <td>${team.gm}</td>
-
-        <td>${team.gs}</td>
-
-        <td>${team.sg}</td>
-
-        <td class="points">
-        ${team.pts}
-        </td>
-
-        </tr>
-
-        `;
-
-    });
-
-    html += `
-
-    </tbody>
-
-    </table>
-
+  <header>
+    <h1>🏆 Interclasse 2026</h1>
+    <p>Colégio Pomba D'Amizade</p>
+  </header>
+
+  <main class="container">
+
+    <div id="status" class="status">
+      🔄 A carregar dados...
     </div>
 
-    `;
+    <!-- CLASSIFICAÇÃO -->
+    <section class="card">
 
-    document.getElementById("standings")
-        .innerHTML = html;
+      <h2>📊 Classificação</h2>
 
-}
+      <div class="table-container">
 
-function getTeamName(id) {
+        <table>
 
-    const team =
-        teams.find(t => t.id === id);
+          <thead>
+            <tr>
+              <th>Pos</th>
+              <th>Equipa</th>
+              <th>PJ</th>
+              <th>V</th>
+              <th>E</th>
+              <th>D</th>
+              <th>GM</th>
+              <th>GS</th>
+              <th>SG</th>
+              <th>PTS</th>
+            </tr>
+          </thead>
 
-    return team
-        ? team.name
-        : "Equipa";
+          <tbody id="classificacao">
+            <tr>
+              <td colspan="10" class="vazio">
+                A carregar classificação...
+              </td>
+            </tr>
+          </tbody>
 
-}
+        </table>
 
-function renderResults() {
+      </div>
 
-    const played =
-        matches.filter(
-            m => m.status === "played"
-        );
+    </section>
 
-    if (!played.length) {
 
-        document.getElementById("results")
-            .innerHTML =
-            "<p>Nenhum resultado registado.</p>";
+    <!-- JOGOS -->
+    <section class="card">
 
-        return;
+      <h2>⚽ Jogos</h2>
 
-    }
+      <div id="jogos">
 
-    let html = "";
-
-    [...played]
-    .reverse()
-    .forEach(match => {
-
-        html += `
-
-        <div class="match">
-
-            <div class="team">
-
-                ${escapeHtml(
-                    getTeamName(match.home_team_id)
-                )}
-
-            </div>
-
-            <div class="score">
-
-                ${match.home_score}
-                -
-                ${match.away_score}
-
-            </div>
-
-            <div class="team">
-
-                ${escapeHtml(
-                    getTeamName(match.away_team_id)
-                )}
-
-            </div>
-
+        <div class="vazio">
+          A carregar jogos...
         </div>
 
-        `;
+      </div>
 
-    });
+    </section>
 
-    document.getElementById("results")
-        .innerHTML = html;
+  </main>
 
-}
 
-function renderUpcoming() {
+  <footer>
+    Interclasse 2026 — Colégio Pomba D'Amizade
+    <br>
+    Atualização automática
+  </footer>
 
-    const upcoming =
-        matches.filter(
-            m => m.status === "scheduled"
-        );
 
-    if (!upcoming.length) {
+  <script>
 
-        document.getElementById("upcoming")
-            .innerHTML =
-            "<p>Nenhum próximo jogo registado.</p>";
+    /*
+      ============================================
+      CONEXÃO COM SUPABASE
+      ============================================
+    */
 
-        return;
+    const clienteSupabase = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    );
 
-    }
 
-    let html = "";
+    /*
+      ============================================
+      ELEMENTOS DA PÁGINA
+      ============================================
+    */
 
-    upcoming.forEach(match => {
+    const tabelaClassificacao =
+      document.getElementById("classificacao");
 
-        let date = "";
+    const listaJogos =
+      document.getElementById("jogos");
 
-        if (match.match_date) {
+    const status =
+      document.getElementById("status");
 
-            date =
-                new Date(
-                    match.match_date
-                ).toLocaleString(
-                    "pt-PT"
-                );
 
+    /*
+      ============================================
+      CARREGAR CLASSIFICAÇÃO
+      ============================================
+    */
+
+    async function carregarClassificacao() {
+
+      try {
+
+        /*
+          Buscar equipas
+        */
+
+        const { data: equipas, error: erroEquipas } =
+          await clienteSupabase
+            .from("equipas")
+            .select("id, nome");
+
+        if (erroEquipas) {
+          throw erroEquipas;
         }
 
-        html += `
 
-        <div class="match">
+        /*
+          Buscar classificação
+        */
 
-            <div class="team">
+        const { data: classificacao, error: erroClassificacao } =
+          await clienteSupabase
+            .from("classificacao")
+            .select(`
+              equipa_id,
+              jogos,
+              vitorias,
+              empates,
+              derrotas,
+              pontos_marcados,
+              pontos_sofridos,
+              pontos
+            `);
 
-                ${escapeHtml(
-                    getTeamName(match.home_team_id)
-                )}
+        if (erroClassificacao) {
+          throw erroClassificacao;
+        }
 
-            </div>
 
-            <div class="score">
+        /*
+          Juntar o nome da equipa
+          com os dados da classificação
+        */
 
-                VS
+        const dados = classificacao.map(item => {
 
-                <div class="date">
-                ${date}
-                </div>
+          const equipa =
+            equipas.find(e => e.id === item.equipa_id);
 
-            </div>
+          const gm =
+            Number(item.pontos_marcados || 0);
 
-            <div class="team">
+          const gs =
+            Number(item.pontos_sofridos || 0);
 
-                ${escapeHtml(
-                    getTeamName(match.away_team_id)
-                )}
+          const sg = gm - gs;
 
-            </div>
+          return {
 
-        </div>
+            equipa_id: item.equipa_id,
+
+            nome:
+              equipa ? equipa.nome : "Equipa",
+
+            jogos:
+              Number(item.jogos || 0),
+
+            vitorias:
+              Number(item.vitorias || 0),
+
+            empates:
+              Number(item.empates || 0),
+
+            derrotas:
+              Number(item.derrotas || 0),
+
+            gm: gm,
+
+            gs: gs,
+
+            sg: sg,
+
+            pontos:
+              Number(item.pontos || 0)
+          };
+
+        });
+
+
+        /*
+          Ordenação:
+
+          1º Pontos
+          2º Saldo de golos
+          3º Golos marcados
+        */
+
+        dados.sort((a, b) => {
+
+          if (b.pontos !== a.pontos) {
+            return b.pontos - a.pontos;
+          }
+
+          if (b.sg !== a.sg) {
+            return b.sg - a.sg;
+          }
+
+          return b.gm - a.gm;
+
+        });
+
+
+        /*
+          Se não houver equipas
+        */
+
+        if (dados.length === 0) {
+
+          tabelaClassificacao.innerHTML = `
+            <tr>
+              <td colspan="10" class="vazio">
+                Nenhuma equipa encontrada.
+              </td>
+            </tr>
+          `;
+
+          return;
+        }
+
+
+        /*
+          Construir tabela
+        */
+
+        tabelaClassificacao.innerHTML = "";
+
+
+        dados.forEach((equipa, index) => {
+
+          const linha =
+            document.createElement("tr");
+
+          linha.innerHTML = `
+
+            <td class="posicao">
+              ${index + 1}
+            </td>
+
+            <td class="equipa">
+              ${escaparHTML(equipa.nome)}
+            </td>
+
+            <td>
+              ${equipa.jogos}
+            </td>
+
+            <td>
+              ${equipa.vitorias}
+            </td>
+
+            <td>
+              ${equipa.empates}
+            </td>
+
+            <td>
+              ${equipa.derrotas}
+            </td>
+
+            <td>
+              ${equipa.gm}
+            </td>
+
+            <td>
+              ${equipa.gs}
+            </td>
+
+            <td>
+              ${equipa.sg}
+            </td>
+
+            <td class="pontos">
+              ${equipa.pontos}
+            </td>
+
+          `;
+
+          tabelaClassificacao.appendChild(linha);
+
+        });
+
+      }
+
+      catch (erro) {
+
+        console.error(
+          "Erro ao carregar classificação:",
+          erro
+        );
+
+        tabelaClassificacao.innerHTML = `
+
+          <tr>
+            <td colspan="10" class="vazio">
+              ❌ Não foi possível carregar a classificação.
+            </td>
+          </tr>
 
         `;
 
-    });
+        throw erro;
 
-    document.getElementById("upcoming")
-        .innerHTML = html;
+      }
 
-}
+    }
 
-function escapeHtml(text) {
 
-    return String(text)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+    /*
+      ============================================
+      CARREGAR JOGOS
+      ============================================
+    */
 
-}
+    async function carregarJogos() {
 
-function showError(message) {
+      try {
 
-    document.getElementById("standings")
-        .innerHTML = `
+        const { data: jogos, error } =
+          await clienteSupabase
+            .from("jogos")
+            .select(`
+              id,
+              equipa_casa_id,
+              equipa_fora_id,
+              data_jogo,
+              hora_jogo,
+              local,
+              pontos_casa,
+              pontos_fora,
+              estado
+            `)
+            .order("data_jogo", {
+              ascending: true
+            })
+            .order("hora_jogo", {
+              ascending: true
+            });
 
-        <div class="error">
 
-        Erro ao carregar os dados:
+        if (error) {
+          throw error;
+        }
 
-        ${escapeHtml(message)}
 
-        </div>
+        const { data: equipas, error: erroEquipas } =
+          await clienteSupabase
+            .from("equipas")
+            .select("id, nome");
+
+
+        if (erroEquipas) {
+          throw erroEquipas;
+        }
+
+
+        if (!jogos || jogos.length === 0) {
+
+          listaJogos.innerHTML = `
+
+            <div class="vazio">
+              Nenhum jogo encontrado.
+            </div>
+
+          `;
+
+          return;
+        }
+
+
+        listaJogos.innerHTML = "";
+
+
+        jogos.forEach(jogo => {
+
+          const equipaCasa =
+            equipas.find(
+              e => e.id === jogo.equipa_casa_id
+            );
+
+          const equipaFora =
+            equipas.find(
+              e => e.id === jogo.equipa_fora_id
+            );
+
+
+          const nomeCasa =
+            equipaCasa
+              ? equipaCasa.nome
+              : "Equipa";
+
+          const nomeFora =
+            equipaFora
+              ? equipaFora.nome
+              : "Equipa";
+
+
+          const terminado =
+            jogo.estado === "terminado";
+
+
+          const resultado =
+            terminado
+
+              ? `${jogo.pontos_casa} - ${jogo.pontos_fora}`
+
+              : "vs";
+
+
+          const data =
+            jogo.data_jogo
+              ? formatarData(jogo.data_jogo)
+              : "";
+
+
+          const hora =
+            jogo.hora_jogo
+              ? jogo.hora_jogo.substring(0, 5)
+              : "";
+
+
+          const div =
+            document.createElement("div");
+
+          div.className = "jogo";
+
+
+          div.innerHTML = `
+
+            <div class="equipas-jogo">
+
+              <div>
+                ${escaparHTML(nomeCasa)}
+              </div>
+
+              <div>
+                ${escaparHTML(nomeFora)}
+              </div>
+
+              ${
+                data || hora
+                  ? `<small>
+                       ${data}
+                       ${hora ? " • " + hora : ""}
+                     </small>`
+                  : ""
+              }
+
+              ${
+                jogo.local
+                  ? `<small>
+                       📍 ${escaparHTML(jogo.local)}
+                     </small>`
+                  : ""
+              }
+
+            </div>
+
+
+            <div class="resultado">
+              ${resultado}
+            </div>
+
+
+            <div>
+
+              <span class="estado ${
+                terminado
+                  ? "terminado"
+                  : "agendado"
+              }">
+
+                ${
+                  terminado
+                    ? "Terminado"
+                    : "Agendado"
+                }
+
+              </span>
+
+            </div>
+
+          `;
+
+
+          listaJogos.appendChild(div);
+
+        });
+
+      }
+
+      catch (erro) {
+
+        console.error(
+          "Erro ao carregar jogos:",
+          erro
+        );
+
+        listaJogos.innerHTML = `
+
+          <div class="vazio">
+            ❌ Não foi possível carregar os jogos.
+          </div>
 
         `;
 
-}
+        throw erro;
 
-loadCompetitions();
+      }
 
-</script>
+    }
+
+
+    /*
+      ============================================
+      DATA
+      ============================================
+    */
+
+    function formatarData(data) {
+
+      try {
+
+        const partes =
+          data.split("-");
+
+        if (partes.length !== 3) {
+          return data;
+        }
+
+        return `${partes[2]}/${partes[1]}/${partes[0]}`;
+
+      }
+
+      catch {
+
+        return data;
+
+      }
+
+    }
+
+
+    /*
+      ============================================
+      SEGURANÇA DO TEXTO
+      ============================================
+    */
+
+    function escaparHTML(texto) {
+
+      if (texto === null || texto === undefined) {
+        return "";
+      }
+
+      return String(texto)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    }
+
+
+    /*
+      ============================================
+      CARREGAR TUDO
+      ============================================
+    */
+
+    async function carregarTudo() {
+
+      status.className = "status";
+      status.textContent =
+        "🔄 A atualizar dados...";
+
+
+      try {
+
+        await Promise.all([
+          carregarClassificacao(),
+          carregarJogos()
+        ]);
+
+
+        status.className =
+          "status ok";
+
+        status.textContent =
+          "🟢 Dados atualizados";
+
+      }
+
+      catch (erro) {
+
+        status.className =
+          "status erro";
+
+        status.textContent =
+          "🔴 Erro ao atualizar os dados";
+
+      }
+
+    }
+
+
+    /*
+      ============================================
+      PRIMEIRO CARREGAMENTO
+      ============================================
+    */
+
+    carregarTudo();
+
+
+    /*
+      ============================================
+      ATUALIZAÇÃO AUTOMÁTICA
+      ============================================
+      
+      A cada 10 segundos o site consulta
+      novamente o Supabase.
+    */
+
+    setInterval(() => {
+
+      carregarTudo();
+
+    }, 10000);
+
+  </script>
 
 </body>
-  </html>
+                  </html>
