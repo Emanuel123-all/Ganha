@@ -3,22 +3,18 @@
 <head>
 
   <meta charset="UTF-8">
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Painel de Administrador - Pomba D'Amizade</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <script src="config.js"></script>
-
 
   <style>
 
     * {
       box-sizing: border-box;
     }
-
 
     body {
       font-family: Arial, sans-serif;
@@ -27,7 +23,6 @@
       color: #111827;
     }
 
-
     header {
       background: #0f172a;
       color: white;
@@ -35,25 +30,21 @@
       padding: 25px 15px;
     }
 
-
     header h1 {
       margin: 0;
       font-size: 26px;
     }
-
 
     header p {
       color: #cbd5e1;
       margin-bottom: 0;
     }
 
-
     .container {
       width: 95%;
       max-width: 1000px;
       margin: 20px auto;
     }
-
 
     .caixa {
       background: white;
@@ -63,12 +54,10 @@
       box-shadow: 0 3px 12px rgba(0,0,0,0.08);
     }
 
-
     h2 {
       margin-top: 0;
       color: #0f172a;
     }
-
 
     input,
     select {
@@ -80,7 +69,6 @@
       font-size: 15px;
     }
 
-
     button {
       border: none;
       border-radius: 7px;
@@ -91,31 +79,25 @@
       font-weight: bold;
     }
 
-
     button:hover {
       opacity: 0.88;
     }
-
 
     .btn-principal {
       background: #0f172a;
     }
 
-
     .btn-verde {
       background: #198754;
     }
-
 
     .btn-vermelho {
       background: #dc2626;
     }
 
-
     .btn-azul {
       background: #2563eb;
     }
-
 
     .mensagem {
       padding: 12px;
@@ -126,29 +108,24 @@
       background: #e2e8f0;
     }
 
-
     .sucesso {
       background: #dcfce7;
       color: #166534;
     }
-
 
     .erro {
       background: #fee2e2;
       color: #991b1b;
     }
 
-
     .equipa {
       padding: 14px;
       border-bottom: 1px solid #e5e7eb;
     }
 
-
     .equipa:last-child {
       border-bottom: none;
     }
-
 
     .jogo {
       padding: 15px;
@@ -158,11 +135,9 @@
       background: #f8fafc;
     }
 
-
     .jogo strong {
       font-size: 16px;
     }
-
 
     .resultado {
       display: flex;
@@ -171,13 +146,11 @@
       margin-top: 12px;
     }
 
-
     .resultado input {
       width: 65px;
       text-align: center;
       font-size: 18px;
     }
-
 
     .vazio {
       color: #64748b;
@@ -185,13 +158,11 @@
       padding: 15px;
     }
 
-
     .linha {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
     }
-
 
     .info {
       padding: 10px;
@@ -200,7 +171,6 @@
       border-radius: 7px;
       font-size: 14px;
     }
-
 
     @media (max-width: 600px) {
 
@@ -214,9 +184,7 @@
 
 </head>
 
-
 <body>
-
 
 <header>
 
@@ -228,30 +196,20 @@
 
 </header>
 
-
 <main class="container">
 
-
-  <!-- =============================== -->
-  <!-- MENSAGEM DE CONEXÃO -->
-  <!-- =============================== -->
+  <!-- MENSAGEM -->
 
   <div id="mensagem" class="mensagem">
-
     🔄 A ligar ao Supabase...
-
   </div>
 
 
-
-  <!-- =============================== -->
   <!-- ADICIONAR EQUIPA -->
-  <!-- =============================== -->
 
   <section class="caixa">
 
     <h2>➕ Adicionar equipa</h2>
-
 
     <input
       type="text"
@@ -259,64 +217,48 @@
       placeholder="Nome da equipa"
     >
 
-
     <input
       type="text"
       id="grupoEquipa"
       placeholder="Grupo (ex.: A)"
     >
 
-
     <button
       class="btn-verde"
       onclick="adicionarEquipa()"
     >
-
       ➕ Adicionar equipa
-
     </button>
 
   </section>
 
 
-
-  <!-- =============================== -->
   <!-- LISTA DE EQUIPAS -->
-  <!-- =============================== -->
 
   <section class="caixa">
 
     <h2>👥 Equipas</h2>
 
-
     <div id="listaEquipas">
-
       A carregar...
-
     </div>
 
   </section>
 
 
-
-  <!-- =============================== -->
   <!-- ADICIONAR JOGO -->
-  <!-- =============================== -->
 
   <section class="caixa">
 
     <h2>⚽ Adicionar jogo</h2>
 
-
     <div class="linha">
-
 
       <div>
 
         <label>
           Equipa da casa
         </label>
-
 
         <select id="equipaCasa">
 
@@ -329,13 +271,11 @@
       </div>
 
 
-
       <div>
 
         <label>
           Equipa visitante
         </label>
-
 
         <select id="equipaFora">
 
@@ -347,20 +287,16 @@
 
       </div>
 
-
     </div>
 
 
-
     <div class="linha">
-
 
       <div>
 
         <label>
           Data
         </label>
-
 
         <input
           type="date"
@@ -370,13 +306,11 @@
       </div>
 
 
-
       <div>
 
         <label>
           Hora
         </label>
-
 
         <input
           type="time"
@@ -385,9 +319,7 @@
 
       </div>
 
-
     </div>
-
 
 
     <input
@@ -401,37 +333,26 @@
       class="btn-azul"
       onclick="adicionarJogo()"
     >
-
       ➕ Criar jogo
-
     </button>
 
   </section>
 
 
-
-  <!-- =============================== -->
   <!-- LISTA DE JOGOS -->
-  <!-- =============================== -->
 
   <section class="caixa">
 
     <h2>📅 Jogos</h2>
 
-
     <div id="listaJogos">
-
       A carregar...
-
     </div>
 
   </section>
 
 
-
-  <!-- =============================== -->
   <!-- ATUALIZAR -->
-  <!-- =============================== -->
 
   <section class="caixa">
 
@@ -439,27 +360,21 @@
       class="btn-principal"
       onclick="carregarDados()"
     >
-
       🔄 Atualizar dados
-
     </button>
 
   </section>
 
-
 </main>
 
 
-
 <script>
-
 
   // ==========================================
   // LIGAÇÃO AO SUPABASE
   // ==========================================
 
-  let clienteSupabase;
-
+  let clienteSupabase = null;
 
   try {
 
@@ -474,13 +389,11 @@
 
     }
 
-
     clienteSupabase =
       window.supabase.createClient(
         SUPABASE_URL,
         SUPABASE_ANON_KEY
       );
-
 
   } catch (error) {
 
@@ -489,7 +402,6 @@
       error
     );
 
-
     document.getElementById("mensagem").textContent =
       "🔴 Erro no config.js: verifica a URL e a Publishable Key.";
 
@@ -497,7 +409,6 @@
       "mensagem erro";
 
   }
-
 
 
   // ==========================================
@@ -512,15 +423,12 @@
     const mensagem =
       document.getElementById("mensagem");
 
-
     mensagem.textContent = texto;
-
 
     mensagem.className =
       "mensagem " + tipo;
 
   }
-
 
 
   // ==========================================
@@ -538,21 +446,14 @@
 
     }
 
-
     return String(texto)
-
       .replace(/&/g, "&amp;")
-
       .replace(/</g, "&lt;")
-
       .replace(/>/g, "&gt;")
-
       .replace(/"/g, "&quot;")
-
       .replace(/'/g, "&#039;");
 
   }
-
 
 
   // ==========================================
@@ -561,20 +462,11 @@
 
   async function carregarEquipas() {
 
-
     const { data, error } =
       await clienteSupabase
-
         .from("equipas")
-
-        .select(
-          "id, nome, grupo, cor"
-        )
-
-        .order(
-          "id",
-          { ascending: true }
-        );
+        .select("id, nome, grupo, cor")
+        .order("id", { ascending: true });
 
 
     if (error) {
@@ -583,7 +475,6 @@
         "Erro ao carregar equipas:",
         error
       );
-
 
       document.getElementById(
         "listaEquipas"
@@ -595,18 +486,15 @@
           ${escaparHTML(error.message)}
         </p>`;
 
-
       throw error;
 
     }
-
 
 
     const lista =
       document.getElementById(
         "listaEquipas"
       );
-
 
 
     if (
@@ -617,26 +505,18 @@
       lista.innerHTML =
         '<p class="vazio">Nenhuma equipa cadastrada.</p>';
 
-    }
-
-    else {
+    } else {
 
       lista.innerHTML = "";
-
 
       data.forEach(
         equipa => {
 
-
           const div =
-            document.createElement(
-              "div"
-            );
-
+            document.createElement("div");
 
           div.className =
             "equipa";
-
 
           div.innerHTML = `
 
@@ -660,18 +540,14 @@
 
             </div>
 
-
             <button
               class="btn-vermelho"
               onclick="apagarEquipa(${equipa.id})"
             >
-
               🗑️ Apagar equipa
-
             </button>
 
           `;
-
 
           lista.appendChild(div);
 
@@ -681,7 +557,6 @@
     }
 
 
-
     atualizarSelectsEquipas(
       data || []
     );
@@ -689,74 +564,56 @@
   }
 
 
-
   // ==========================================
-  // ATUALIZAR SELECTS DAS EQUIPAS
+  // ATUALIZAR SELECTS
   // ==========================================
 
   function atualizarSelectsEquipas(
     equipas
   ) {
 
-
     const casa =
       document.getElementById(
         "equipaCasa"
       );
-
 
     const fora =
       document.getElementById(
         "equipaFora"
       );
 
-
     casa.innerHTML =
       '<option value="">Selecionar equipa</option>';
-
 
     fora.innerHTML =
       '<option value="">Selecionar equipa</option>';
 
 
-
     equipas.forEach(
       equipa => {
 
-
         const optionCasa =
-          document.createElement(
-            "option"
-          );
-
+          document.createElement("option");
 
         optionCasa.value =
           equipa.id;
 
-
         optionCasa.textContent =
           equipa.nome;
-
 
         casa.appendChild(
           optionCasa
         );
 
 
-
         const optionFora =
-          document.createElement(
-            "option"
-          );
-
+          document.createElement("option");
 
         optionFora.value =
           equipa.id;
 
-
         optionFora.textContent =
           equipa.nome;
-
 
         fora.appendChild(
           optionFora
@@ -768,25 +625,21 @@
   }
 
 
-
   // ==========================================
   // ADICIONAR EQUIPA
   // ==========================================
 
   async function adicionarEquipa() {
 
-
     const nome =
       document.getElementById(
         "nomeEquipa"
       ).value.trim();
 
-
     const grupo =
       document.getElementById(
         "grupoEquipa"
       ).value.trim();
-
 
 
     if (!nome) {
@@ -800,27 +653,16 @@
     }
 
 
-
     const { data, error } =
       await clienteSupabase
-
         .from("equipas")
-
         .insert({
-
           nome: nome,
-
-          grupo:
-            grupo || null,
-
+          grupo: grupo || null,
           cor: "normal"
-
         })
-
         .select()
-
         .single();
-
 
 
     if (error) {
@@ -830,17 +672,14 @@
         error
       );
 
-
       alert(
         "❌ Erro ao adicionar equipa:\n\n" +
         error.message
       );
 
-
       return;
 
     }
-
 
 
     alert(
@@ -849,22 +688,18 @@
     );
 
 
-
     document.getElementById(
       "nomeEquipa"
     ).value = "";
-
 
     document.getElementById(
       "grupoEquipa"
     ).value = "";
 
 
-
     await carregarEquipas();
 
   }
-
 
 
   // ==========================================
@@ -873,34 +708,23 @@
 
   async function apagarEquipa(id) {
 
-
     const confirmar =
       confirm(
-
         "⚠️ Tens certeza que queres apagar esta equipa?\n\n" +
-
         "Esta ação pode afetar jogos e classificação."
-
       );
 
 
     if (!confirmar) {
-
       return;
-
     }
-
 
 
     const { error } =
       await clienteSupabase
-
         .from("equipas")
-
         .delete()
-
         .eq("id", id);
-
 
 
     if (error) {
@@ -910,17 +734,14 @@
         error
       );
 
-
       alert(
         "❌ Erro ao apagar equipa:\n\n" +
         error.message
       );
 
-
       return;
 
     }
-
 
 
     alert(
@@ -933,43 +754,36 @@
   }
 
 
-
   // ==========================================
   // ADICIONAR JOGO
   // ==========================================
 
   async function adicionarJogo() {
 
-
     const equipaCasa =
       document.getElementById(
         "equipaCasa"
       ).value;
-
 
     const equipaFora =
       document.getElementById(
         "equipaFora"
       ).value;
 
-
     const dataJogo =
       document.getElementById(
         "dataJogo"
       ).value;
-
 
     const horaJogo =
       document.getElementById(
         "horaJogo"
       ).value;
 
-
     const localJogo =
       document.getElementById(
         "localJogo"
       ).value.trim();
-
 
 
     if (
@@ -986,7 +800,6 @@
     }
 
 
-
     if (
       equipaCasa === equipaFora
     ) {
@@ -1000,12 +813,9 @@
     }
 
 
-
     const { data, error } =
       await clienteSupabase
-
         .from("jogos")
-
         .insert({
 
           equipa_casa_id:
@@ -1030,11 +840,8 @@
           estado: "agendado"
 
         })
-
         .select()
-
         .single();
-
 
 
     if (error) {
@@ -1044,17 +851,14 @@
         error
       );
 
-
       alert(
         "❌ Erro ao criar jogo:\n\n" +
         error.message
       );
 
-
       return;
 
     }
-
 
 
     alert(
@@ -1062,37 +866,30 @@
     );
 
 
-
     document.getElementById(
       "equipaCasa"
     ).value = "";
-
 
     document.getElementById(
       "equipaFora"
     ).value = "";
 
-
     document.getElementById(
       "dataJogo"
     ).value = "";
 
-
     document.getElementById(
       "horaJogo"
     ).value = "";
-
 
     document.getElementById(
       "localJogo"
     ).value = "";
 
 
-
     await carregarJogos();
 
   }
-
 
 
   // ==========================================
@@ -1101,19 +898,15 @@
 
   async function carregarJogos() {
 
-
     const lista =
       document.getElementById(
         "listaJogos"
       );
 
 
-
     const { data, error } =
       await clienteSupabase
-
         .from("jogos")
-
         .select(`
           id,
           data_jogo,
@@ -1125,12 +918,10 @@
           equipa_casa_id,
           equipa_fora_id
         `)
-
         .order(
           "data_jogo",
           { ascending: true }
         );
-
 
 
     if (error) {
@@ -1140,26 +931,17 @@
         error
       );
 
-
       lista.innerHTML =
 
         `<p class="erro">
-
           ❌ Erro ao carregar jogos.
-
           <br><br>
-
-          ${escaparHTML(
-            error.message
-          )}
-
+          ${escaparHTML(error.message)}
         </p>`;
-
 
       throw error;
 
     }
-
 
 
     if (
@@ -1175,16 +957,13 @@
     }
 
 
-
-    const { data: equipas, error: erroEquipas } =
+    const {
+      data: equipas,
+      error: erroEquipas
+    } =
       await clienteSupabase
-
         .from("equipas")
-
-        .select(
-          "id, nome"
-        );
-
+        .select("id, nome");
 
 
     if (erroEquipas) {
@@ -1196,7 +975,6 @@
       throw erroEquipas;
 
     }
-
 
 
     const mapaEquipas = {};
@@ -1214,14 +992,11 @@
     );
 
 
-
     lista.innerHTML = "";
-
 
 
     data.forEach(
       jogo => {
-
 
         const nomeCasa =
           mapaEquipas[
@@ -1237,7 +1012,6 @@
           "Equipa";
 
 
-
         const div =
           document.createElement(
             "div"
@@ -1246,7 +1020,6 @@
 
         div.className =
           "jogo";
-
 
 
         div.innerHTML = `
@@ -1265,34 +1038,26 @@
 
           </strong>
 
-
           <br><br>
-
 
           📅 Data:
           ${escaparHTML(
             jogo.data_jogo || "-"
           )}
 
-
           <br>
-
 
           🕐 Hora:
           ${escaparHTML(
             jogo.hora_jogo || "-"
           )}
 
-
           <br>
-
 
           📍 Local:
           ${escaparHTML(
             jogo.local || "-"
           )}
-
-
 
           <div class="resultado">
 
@@ -1303,9 +1068,7 @@
               value="${jogo.pontos_casa ?? 0}"
             >
 
-
             <strong>×</strong>
-
 
             <input
               type="number"
@@ -1317,10 +1080,7 @@
           </div>
 
 
-
-          <select
-            id="estado-${jogo.id}"
-          >
+          <select id="estado-${jogo.id}">
 
             <option
               value="agendado"
@@ -1333,7 +1093,6 @@
               Agendado
             </option>
 
-
             <option
               value="em_andamento"
               ${
@@ -1344,7 +1103,6 @@
             >
               Em andamento
             </option>
-
 
             <option
               value="terminado"
@@ -1360,29 +1118,22 @@
           </select>
 
 
-
           <button
             class="btn-verde"
             onclick="guardarResultado(${jogo.id})"
           >
-
             💾 Guardar resultado
-
           </button>
-
 
 
           <button
             class="btn-vermelho"
             onclick="apagarJogo(${jogo.id})"
           >
-
             🗑️ Apagar jogo
-
           </button>
 
         `;
-
 
 
         lista.appendChild(
@@ -1395,38 +1146,61 @@
   }
 
 
-
   // ==========================================
   // GUARDAR RESULTADO
   // ==========================================
 
-  async function guardarResultado(
-    id
-  ) {
+  async function guardarResultado(id) {
+
+    const idJogo =
+      Number(id);
 
 
-    const pontosCasa =
+    if (!idJogo) {
+
+      alert(
+        "❌ ID do jogo inválido."
+      );
+
+      return;
+
+    }
+
+
+    const campoCasa =
       document.getElementById(
-        `casa-${id}`
-      ).value;
+        `casa-${idJogo}`
+      );
 
-
-    const pontosFora =
+    const campoFora =
       document.getElementById(
-        `fora-${id}`
-      ).value;
+        `fora-${idJogo}`
+      );
 
-
-    const estado =
+    const campoEstado =
       document.getElementById(
-        `estado-${id}`
-      ).value;
-
+        `estado-${idJogo}`
+      );
 
 
     if (
-      pontosCasa === "" ||
-      pontosFora === ""
+      !campoCasa ||
+      !campoFora ||
+      !campoEstado
+    ) {
+
+      alert(
+        "❌ Não foi possível encontrar os campos deste jogo."
+      );
+
+      return;
+
+    }
+
+
+    if (
+      campoCasa.value === "" ||
+      campoFora.value === ""
     ) {
 
       alert(
@@ -1438,34 +1212,76 @@
     }
 
 
+    const pontosCasa =
+      Number(
+        campoCasa.value
+      );
 
-    const { data, error } =
+    const pontosFora =
+      Number(
+        campoFora.value
+      );
+
+    const estado =
+      campoEstado.value;
+
+
+    if (
+      !Number.isInteger(pontosCasa) ||
+      !Number.isInteger(pontosFora)
+    ) {
+
+      alert(
+        "⚠️ Os resultados devem ser números inteiros."
+      );
+
+      return;
+
+    }
+
+
+    if (
+      pontosCasa < 0 ||
+      pontosFora < 0
+    ) {
+
+      alert(
+        "⚠️ Os pontos não podem ser negativos."
+      );
+
+      return;
+
+    }
+
+
+    // ==========================================
+    // 1. GUARDAR RESULTADO
+    // ==========================================
+
+    const {
+      data,
+      error
+    } =
       await clienteSupabase
-
         .from("jogos")
-
         .update({
 
           pontos_casa:
-            Number(pontosCasa),
+            pontosCasa,
 
           pontos_fora:
-            Number(pontosFora),
+            pontosFora,
 
           estado:
             estado
 
         })
-
         .eq(
           "id",
-          id
+          idJogo
         )
-
         .select()
-
         .single();
-
 
 
     if (error) {
@@ -1475,18 +1291,57 @@
         error
       );
 
-
       alert(
         "❌ Erro ao guardar o resultado:\n\n" +
         error.message
       );
-
 
       return;
 
     }
 
 
+    // ==========================================
+    // 2. RECALCULAR CLASSIFICAÇÃO
+    // ==========================================
+
+    if (
+      estado === "terminado"
+    ) {
+
+      const {
+        error: erroClassificacao
+      } =
+        await clienteSupabase
+          .rpc(
+            "recalcular_classificacao"
+          );
+
+
+      if (erroClassificacao) {
+
+        console.error(
+          "Erro ao recalcular classificação:",
+          erroClassificacao
+        );
+
+        alert(
+          "⚠️ O resultado foi guardado, mas a classificação não pôde ser atualizada:\n\n" +
+          erroClassificacao.message
+        );
+
+        await carregarJogos();
+
+        return;
+
+      }
+
+    }
+
+
+    // ==========================================
+    // 3. CONFIRMAÇÃO
+    // ==========================================
 
     alert(
 
@@ -1494,10 +1349,15 @@
 
       `${data.pontos_casa} - ${data.pontos_fora}\n` +
 
-      `Estado: ${data.estado}`
+      `Estado: ${data.estado}\n\n` +
+
+      (
+        estado === "terminado"
+          ? "📊 Classificação atualizada automaticamente!"
+          : "ℹ️ A classificação será atualizada quando o jogo terminar."
+      )
 
     );
-
 
 
     await carregarJogos();
@@ -1505,15 +1365,11 @@
   }
 
 
-
   // ==========================================
   // APAGAR JOGO
   // ==========================================
 
-  async function apagarJogo(
-    id
-  ) {
-
+  async function apagarJogo(id) {
 
     const confirmar =
       confirm(
@@ -1528,84 +1384,42 @@
     }
 
 
-
-    const { error } =
-      await clienteSupabase
-
-        .from("jogos")
-// ==========================================
-// GUARDAR RESULTADO
-// ==========================================
-
-async function guardarResultado(id) {
-
-  const idJogo = Number(id);
-
-  if (!idJogo) {
-    alert("❌ ID do jogo inválido.");
-    return;
-  }
-
-  const campoCasa = document.getElementById(`casa-${idJogo}`);
-  const campoFora = document.getElementById(`fora-${idJogo}`);
-  const campoEstado = document.getElementById(`estado-${idJogo}`);
-
-  if (!campoCasa || !campoFora || !campoEstado) {
-    alert("❌ Não foi possível encontrar os campos deste jogo.");
-    return;
-  }
-
-  const pontosCasa = Number(campoCasa.value);
-  const pontosFora = Number(campoFora.value);
-  const estado = campoEstado.value;
-
-  if (
-    campoCasa.value === "" ||
-    campoFora.value === ""
-  ) {
-    alert("⚠️ Coloca os dois resultados.");
-    return;
-  }
-
-  if (
-    pontosCasa < 0 ||
-    pontosFora < 0
-  ) {
-    alert("⚠️ Os pontos não podem ser negativos.");
-    return;
-  }
-
-  const { error } = await clienteSupabase
-    .from("jogos")
-    .update({
-      pontos_casa: pontosCasa,
-      pontos_fora: pontosFora,
-      estado: estado
-    })
-    .eq("id", idJogo);
-
-  if (error) {
-
-    console.error(
-      "Erro ao guardar resultado:",
+    const {
       error
-    );
+    } =
+      await clienteSupabase
+        .from("jogos")
+        .delete()
+        .eq(
+          "id",
+          id
+        );
+
+
+    if (error) {
+
+      console.error(
+        "Erro ao apagar jogo:",
+        error
+      );
+
+      alert(
+        "❌ Erro ao apagar jogo:\n\n" +
+        error.message
+      );
+
+      return;
+
+    }
+
 
     alert(
-      "❌ Erro ao guardar o resultado:\n\n" +
-      error.message
+      "✅ Jogo apagado com sucesso!"
     );
 
-    return;
-  }
 
-  alert(
-    "✅ Resultado guardado com sucesso!\n\n" +
-    pontosCasa + " - " + pontosFora +
-    "\nEstado: " + estado
-  );
+    await carregarDados();
 
-  await carregarJogos();
   }
 
 
@@ -1615,34 +1429,25 @@ async function guardarResultado(id) {
 
   async function carregarDados() {
 
-
     mostrarMensagem(
-      "🔄 A ligar ao Supabase..."
+      "🔄 A carregar dados..."
     );
 
 
     try {
 
-
       await carregarEquipas();
-
 
       await carregarJogos();
 
 
       mostrarMensagem(
-
         "🟢 Supabase conectado! Dados atualizados.",
-
         "sucesso"
-
       );
 
 
-    }
-
-    catch (error) {
-
+    } catch (error) {
 
       console.error(
         "Erro ao carregar dados:",
@@ -1651,17 +1456,13 @@ async function guardarResultado(id) {
 
 
       mostrarMensagem(
-
-        "🔴 Erro ao ligar ao Supabase. Verifica as permissões das tabelas.",
-
+        "🔴 Erro ao carregar os dados. Verifica as permissões das tabelas.",
         "erro"
-
       );
 
     }
 
   }
-
 
 
   // ==========================================
@@ -1677,9 +1478,7 @@ async function guardarResultado(id) {
     }
   );
 
-
 </script>
 
-
 </body>
-          </html>
+  </html>
