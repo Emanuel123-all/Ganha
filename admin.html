@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -11,7 +10,6 @@
   <script src="config.js"></script>
 
   <style>
-
     * {
       box-sizing: border-box;
     }
@@ -59,8 +57,7 @@
       color: #0f172a;
     }
 
-    input,
-    select {
+    input, select {
       width: 100%;
       padding: 11px;
       margin: 6px 0;
@@ -83,21 +80,15 @@
       opacity: 0.88;
     }
 
-    .btn-principal {
-      background: #0f172a;
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
-    .btn-verde {
-      background: #198754;
-    }
-
-    .btn-vermelho {
-      background: #dc2626;
-    }
-
-    .btn-azul {
-      background: #2563eb;
-    }
+    .btn-principal { background: #0f172a; }
+    .btn-verde { background: #198754; }
+    .btn-vermelho { background: #dc2626; }
+    .btn-azul { background: #2563eb; }
 
     .mensagem {
       padding: 12px;
@@ -106,6 +97,7 @@
       text-align: center;
       font-weight: bold;
       background: #e2e8f0;
+      overflow-wrap: anywhere;
     }
 
     .sucesso {
@@ -121,10 +113,6 @@
     .equipa {
       padding: 14px;
       border-bottom: 1px solid #e5e7eb;
-    }
-
-    .equipa:last-child {
-      border-bottom: none;
     }
 
     .jogo {
@@ -172,43 +160,51 @@
       font-size: 14px;
     }
 
-    @media (max-width: 600px) {
+    .titulo-fase {
+      background: #e2e8f0;
+      padding: 10px;
+      border-radius: 7px;
+      margin: 20px 0 12px;
+      color: #0f172a;
+    }
 
+    .estado {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 5px;
+      background: #e2e8f0;
+      font-size: 12px;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 600px) {
       .linha {
         grid-template-columns: 1fr;
       }
 
+      .caixa {
+        padding: 15px;
+      }
     }
-
   </style>
-
 </head>
 
 <body>
 
 <header>
-
   <h1>🏆 Painel de Administrador</h1>
-
-  <p>
-    Interclasse 2026 — Colégio Pomba D'Amizade
-  </p>
-
+  <p>Interclasse 2026 — Colégio Pomba D'Amizade</p>
 </header>
 
 <main class="container">
-
-  <!-- MENSAGEM -->
 
   <div id="mensagem" class="mensagem">
     🔄 A ligar ao Supabase...
   </div>
 
-
   <!-- ADICIONAR EQUIPA -->
 
   <section class="caixa">
-
     <h2>➕ Adicionar equipa</h2>
 
     <input
@@ -223,104 +219,59 @@
       placeholder="Grupo (ex.: A)"
     >
 
-    <button
-      class="btn-verde"
-      onclick="adicionarEquipa()"
-    >
+    <button class="btn-verde" onclick="adicionarEquipa()">
       ➕ Adicionar equipa
     </button>
-
   </section>
 
-
-  <!-- LISTA DE EQUIPAS -->
+  <!-- EQUIPAS -->
 
   <section class="caixa">
-
     <h2>👥 Equipas</h2>
 
     <div id="listaEquipas">
       A carregar...
     </div>
-
   </section>
-
 
   <!-- ADICIONAR JOGO -->
 
   <section class="caixa">
-
     <h2>⚽ Adicionar jogo</h2>
 
+    <label>Fase da competição</label>
+
+    <select id="faseJogo">
+      <option value="6">Fase de grupos</option>
+    </select>
+
     <div class="linha">
-
       <div>
-
-        <label>
-          Equipa da casa
-        </label>
-
+        <label>Equipa da casa</label>
         <select id="equipaCasa">
-
-          <option value="">
-            Selecionar equipa
-          </option>
-
+          <option value="">Selecionar equipa</option>
         </select>
-
       </div>
-
 
       <div>
-
-        <label>
-          Equipa visitante
-        </label>
-
+        <label>Equipa visitante</label>
         <select id="equipaFora">
-
-          <option value="">
-            Selecionar equipa
-          </option>
-
+          <option value="">Selecionar equipa</option>
         </select>
-
       </div>
-
     </div>
-
 
     <div class="linha">
-
       <div>
-
-        <label>
-          Data
-        </label>
-
-        <input
-          type="date"
-          id="dataJogo"
-        >
-
+        <label>Data</label>
+        <input type="date" id="dataJogo">
       </div>
 
-
       <div>
-
-        <label>
-          Hora
-        </label>
-
-        <input
-          type="time"
-          id="horaJogo"
-        >
-
+        <label>Hora</label>
+        <input type="time" id="horaJogo">
       </div>
-
     </div>
-
 
     <input
       type="text"
@@ -328,1155 +279,1011 @@
       placeholder="Local do jogo"
     >
 
-
-    <button
-      class="btn-azul"
-      onclick="adicionarJogo()"
-    >
+    <button class="btn-azul" onclick="adicionarJogo()">
       ➕ Criar jogo
     </button>
-
   </section>
 
-
-  <!-- LISTA DE JOGOS -->
+  <!-- JOGOS -->
 
   <section class="caixa">
-
-    <h2>📅 Jogos</h2>
+    <h2>📅 Jogos da competição</h2>
 
     <div id="listaJogos">
       A carregar...
     </div>
-
   </section>
-
 
   <!-- ATUALIZAR -->
 
   <section class="caixa">
-
-    <button
-      class="btn-principal"
-      onclick="carregarDados()"
-    >
+    <button class="btn-principal" onclick="carregarDados()">
       🔄 Atualizar dados
     </button>
-
   </section>
 
 </main>
 
-
 <script>
 
-  // ==========================================
-  // LIGAÇÃO AO SUPABASE
-  // ==========================================
+// ==========================================
+// SUPABASE
+// ==========================================
 
-  let clienteSupabase = null;
+let clienteSupabase = null;
+
+let equipasCache = [];
+let fasesCache = [];
+
+const IDS_FASES = [6, 7, 8, 9];
+
+const NOMES_FASES = {
+  6: "Fase de grupos",
+  7: "Quartos de final",
+  8: "Semifinais",
+  9: "Final"
+};
+
+try {
+
+  if (
+    typeof SUPABASE_URL === "undefined" ||
+    typeof SUPABASE_ANON_KEY === "undefined"
+  ) {
+    throw new Error(
+      "SUPABASE_URL ou SUPABASE_ANON_KEY não encontrados."
+    );
+  }
+
+  clienteSupabase = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+
+} catch (error) {
+
+  console.error(error);
+
+  mostrarMensagem(
+    "🔴 Erro na configuração do Supabase: " + error.message,
+    "erro"
+  );
+
+}
+
+
+// ==========================================
+// MENSAGENS
+// ==========================================
+
+function mostrarMensagem(texto, tipo = "") {
+
+  const elemento = document.getElementById("mensagem");
+
+  elemento.textContent = texto;
+  elemento.className = "mensagem " + tipo;
+
+}
+
+
+// ==========================================
+// ESCAPAR HTML
+// ==========================================
+
+function escaparHTML(texto) {
+
+  if (texto === null || texto === undefined) {
+    return "";
+  }
+
+  return String(texto)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+}
+
+
+// ==========================================
+// CARREGAR FASES
+// ==========================================
+
+async function carregarFases() {
+
+  const { data, error } = await clienteSupabase
+    .from("fases")
+    .select("id, nome, ordem")
+    .in("id", IDS_FASES)
+    .order("ordem", { ascending: true });
+
+  if (error) {
+    console.error("Erro ao carregar fases:", error);
+    throw error;
+  }
+
+  const mapa = new Map(
+    (data || []).map(fase => [Number(fase.id), fase])
+  );
+
+  const faltantes = IDS_FASES.filter(id => !mapa.has(id));
+
+  if (faltantes.length > 0) {
+    throw new Error(
+      "Não foram encontradas as fases com IDs: " +
+      faltantes.join(", ")
+    );
+  }
+
+  fasesCache = IDS_FASES.map(id => mapa.get(id));
+
+  atualizarSelectFases();
+
+}
+
+
+// ==========================================
+// SELECT DE FASES
+// ==========================================
+
+function atualizarSelectFases() {
+
+  const select = document.getElementById("faseJogo");
+
+  select.innerHTML = "";
+
+  fasesCache.forEach(fase => {
+
+    const option = document.createElement("option");
+
+    option.value = fase.id;
+    option.textContent = fase.nome;
+
+    select.appendChild(option);
+
+  });
+
+  select.value = "6";
+
+}
+
+
+// ==========================================
+// NOMES DAS FASES
+// ==========================================
+
+function obterNomeFase(id) {
+
+  const fase = fasesCache.find(
+    item => Number(item.id) === Number(id)
+  );
+
+  return fase
+    ? fase.nome
+    : NOMES_FASES[id] || "Fase desconhecida";
+
+}
+
+
+// ==========================================
+// CARREGAR EQUIPAS
+// ==========================================
+
+async function carregarEquipas() {
+
+  const { data, error } = await clienteSupabase
+    .from("equipas")
+    .select("id, nome, grupo, cor")
+    .order("id", { ascending: true });
+
+  if (error) {
+    console.error(error);
+    throw error;
+  }
+
+  equipasCache = data || [];
+
+  const lista = document.getElementById("listaEquipas");
+
+  lista.innerHTML = "";
+
+  if (equipasCache.length === 0) {
+
+    lista.innerHTML =
+      '<p class="vazio">Nenhuma equipa cadastrada.</p>';
+
+  } else {
+
+    equipasCache.forEach(equipa => {
+
+      const div = document.createElement("div");
+
+      div.className = "equipa";
+
+      div.innerHTML = `
+
+        <strong>${escaparHTML(equipa.nome)}</strong>
+
+        <div class="info">
+
+          👥 Grupo:
+          ${escaparHTML(equipa.grupo || "-")}
+
+          <br><br>
+
+          🎨 Estado:
+          ${escaparHTML(equipa.cor || "normal")}
+
+        </div>
+
+        <button
+          class="btn-vermelho"
+          onclick="apagarEquipa(${Number(equipa.id)})"
+        >
+          🗑️ Apagar equipa
+        </button>
+
+      `;
+
+      lista.appendChild(div);
+
+    });
+
+  }
+
+  atualizarSelectsEquipas();
+
+}
+
+
+// ==========================================
+// SELECTS DE EQUIPAS
+// ==========================================
+
+function atualizarSelectsEquipas() {
+
+  const casa = document.getElementById("equipaCasa");
+  const fora = document.getElementById("equipaFora");
+
+  casa.innerHTML =
+    '<option value="">Selecionar equipa</option>';
+
+  fora.innerHTML =
+    '<option value="">Selecionar equipa</option>';
+
+  equipasCache.forEach(equipa => {
+
+    [casa, fora].forEach(select => {
+
+      const option = document.createElement("option");
+
+      option.value = equipa.id;
+      option.textContent = equipa.nome;
+
+      select.appendChild(option);
+
+    });
+
+  });
+
+}
+
+
+// ==========================================
+// ADICIONAR EQUIPA
+// ==========================================
+
+async function adicionarEquipa() {
+
+  const nome = document
+    .getElementById("nomeEquipa")
+    .value.trim();
+
+  const grupo = document
+    .getElementById("grupoEquipa")
+    .value.trim();
+
+  if (!nome) {
+    alert("⚠️ Coloca o nome da equipa.");
+    return;
+  }
+
+  const { error } = await clienteSupabase
+    .from("equipas")
+    .insert({
+      nome,
+      grupo: grupo || null,
+      cor: "normal"
+    });
+
+  if (error) {
+
+    alert(
+      "❌ Erro ao adicionar equipa:\n\n" + error.message
+    );
+
+    return;
+  }
+
+  document.getElementById("nomeEquipa").value = "";
+  document.getElementById("grupoEquipa").value = "";
+
+  alert("✅ Equipa adicionada com sucesso!");
+
+  await carregarEquipas();
+
+}
+
+
+// ==========================================
+// APAGAR EQUIPA
+// ==========================================
+
+async function apagarEquipa(id) {
+
+  const confirmar = confirm(
+    "⚠️ Tens a certeza que queres apagar esta equipa?\n\n" +
+    "Esta ação pode afetar jogos e classificação."
+  );
+
+  if (!confirmar) return;
+
+  const { error } = await clienteSupabase
+    .from("equipas")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+
+    alert(
+      "❌ Erro ao apagar equipa:\n\n" + error.message
+    );
+
+    return;
+  }
+
+  const atualizacao = await recalcularClassificacao();
+
+  if (!atualizacao.ok) {
+
+    alert(
+      "A equipa foi apagada, mas a classificação não foi atualizada:\n\n" +
+      atualizacao.error
+    );
+
+  } else {
+
+    alert("✅ Equipa apagada com sucesso!");
+
+  }
+
+  await carregarDados();
+
+}
+
+
+// ==========================================
+// ADICIONAR JOGO
+// ==========================================
+
+async function adicionarJogo() {
+
+  const faseId = Number(
+    document.getElementById("faseJogo").value
+  );
+
+  const equipaCasa = document.getElementById("equipaCasa").value;
+  const equipaFora = document.getElementById("equipaFora").value;
+
+  const dataJogo = document.getElementById("dataJogo").value;
+  const horaJogo = document.getElementById("horaJogo").value;
+
+  const localJogo = document
+    .getElementById("localJogo")
+    .value.trim();
+
+  if (!IDS_FASES.includes(faseId)) {
+    alert("⚠️ Seleciona uma fase válida.");
+    return;
+  }
+
+  if (!equipaCasa || !equipaFora) {
+    alert("⚠️ Seleciona as duas equipas.");
+    return;
+  }
+
+  if (equipaCasa === equipaFora) {
+    alert("⚠️ As equipas não podem ser iguais.");
+    return;
+  }
+
+  const { error } = await clienteSupabase
+    .from("jogos")
+    .insert({
+
+      equipa_casa_id: Number(equipaCasa),
+      equipa_fora_id: Number(equipaFora),
+
+      fase_id: faseId,
+
+      data_jogo: dataJogo || null,
+      hora_jogo: horaJogo || null,
+      local: localJogo || null,
+
+      pontos_casa: 0,
+      pontos_fora: 0,
+
+      estado: "agendado"
+
+    });
+
+  if (error) {
+
+    alert(
+      "❌ Erro ao criar jogo:\n\n" + error.message
+    );
+
+    return;
+  }
+
+  alert(
+    "✅ Jogo criado!\n\n" +
+    "Fase: " + obterNomeFase(faseId)
+  );
+
+  document.getElementById("equipaCasa").value = "";
+  document.getElementById("equipaFora").value = "";
+  document.getElementById("dataJogo").value = "";
+  document.getElementById("horaJogo").value = "";
+  document.getElementById("localJogo").value = "";
+
+  document.getElementById("faseJogo").value = "6";
+
+  await carregarJogos();
+
+}
+
+
+// ==========================================
+// CARREGAR JOGOS
+// ==========================================
+
+async function carregarJogos() {
+
+  const lista = document.getElementById("listaJogos");
+
+  const { data, error } = await clienteSupabase
+    .from("jogos")
+    .select(`
+      id,
+      fase_id,
+      data_jogo,
+      hora_jogo,
+      local,
+      pontos_casa,
+      pontos_fora,
+      estado,
+      equipa_casa_id,
+      equipa_fora_id
+    `)
+    .order("data_jogo", { ascending: true })
+    .order("hora_jogo", { ascending: true });
+
+  if (error) {
+
+    console.error(error);
+    throw error;
+
+  }
+
+  lista.innerHTML = "";
+
+  if (!data || data.length === 0) {
+
+    lista.innerHTML =
+      '<p class="vazio">Nenhum jogo cadastrado.</p>';
+
+    return;
+  }
+
+  const mapaEquipas = {};
+
+  equipasCache.forEach(equipa => {
+    mapaEquipas[equipa.id] = equipa.nome;
+  });
+
+  // Agrupar jogos por fase
+
+  IDS_FASES.forEach(faseId => {
+
+    const jogosFase = data.filter(
+      jogo => Number(jogo.fase_id) === faseId
+    );
+
+    const titulo = document.createElement("h3");
+
+    titulo.className = "titulo-fase";
+
+    titulo.textContent =
+      obterNomeFase(faseId) +
+      " (" + jogosFase.length + " jogos)";
+
+    lista.appendChild(titulo);
+
+    if (jogosFase.length === 0) {
+
+      const vazio = document.createElement("p");
+
+      vazio.className = "vazio";
+      vazio.textContent = "Nenhum jogo nesta fase.";
+
+      lista.appendChild(vazio);
+
+      return;
+    }
+
+    jogosFase.forEach(jogo => {
+
+      criarCartaoJogo(jogo, mapaEquipas, lista);
+
+    });
+
+  });
+
+  // Jogos antigos sem fase ou com ID desconhecido.
+  // Não são eliminados nem atribuídos automaticamente a outra fase.
+
+  const jogosSemFase = data.filter(
+    jogo => !IDS_FASES.includes(Number(jogo.fase_id))
+  );
+
+  if (jogosSemFase.length > 0) {
+
+    const titulo = document.createElement("h3");
+
+    titulo.className = "titulo-fase";
+    titulo.textContent = "⚠️ Jogos sem fase válida";
+
+    lista.appendChild(titulo);
+
+    jogosSemFase.forEach(jogo => {
+
+      criarCartaoJogo(jogo, mapaEquipas, lista);
+
+    });
+
+  }
+
+}
+
+
+// ==========================================
+// CARTÃO DE CADA JOGO
+// ==========================================
+
+function criarCartaoJogo(jogo, mapaEquipas, lista) {
+
+  const nomeCasa =
+    mapaEquipas[jogo.equipa_casa_id] || "Equipa";
+
+  const nomeFora =
+    mapaEquipas[jogo.equipa_fora_id] || "Equipa";
+
+  const faseId = Number(jogo.fase_id);
+
+  const div = document.createElement("div");
+
+  div.className = "jogo";
+
+  const opcoesFase = fasesCache.map(fase => `
+
+    <option
+      value="${fase.id}"
+      ${faseId === Number(fase.id) ? "selected" : ""}
+    >
+      ${escaparHTML(fase.nome)}
+    </option>
+
+  `).join("");
+
+  const opcaoSemFase = !IDS_FASES.includes(faseId)
+    ? `<option value="" selected>Selecionar fase</option>`
+    : "";
+
+  div.innerHTML = `
+
+    <strong>
+      ${escaparHTML(nomeCasa)}
+      ×
+      ${escaparHTML(nomeFora)}
+    </strong>
+
+    <br>
+
+    <span class="estado">
+      ${escaparHTML(jogo.estado || "Sem estado")}
+    </span>
+
+    <div class="info">
+
+      📅 Data:
+      ${escaparHTML(jogo.data_jogo || "-")}
+
+      <br>
+
+      🕐 Hora:
+      ${escaparHTML(
+        jogo.hora_jogo
+          ? jogo.hora_jogo.substring(0, 5)
+          : "-"
+      )}
+
+      <br>
+
+      📍 Local:
+      ${escaparHTML(jogo.local || "-")}
+
+    </div>
+
+    <label>Fase do jogo</label>
+
+    <select id="fase-${jogo.id}">
+      ${opcaoSemFase}
+      ${opcoesFase}
+    </select>
+
+    <div class="resultado">
+
+      <input
+        type="number"
+        min="0"
+        step="1"
+        id="casa-${jogo.id}"
+        value="${jogo.pontos_casa ?? 0}"
+      >
+
+      <strong>×</strong>
+
+      <input
+        type="number"
+        min="0"
+        step="1"
+        id="fora-${jogo.id}"
+        value="${jogo.pontos_fora ?? 0}"
+      >
+
+    </div>
+
+    <label>Estado do jogo</label>
+
+    <select id="estado-${jogo.id}">
+
+      <option
+        value="agendado"
+        ${jogo.estado === "agendado" ? "selected" : ""}
+      >
+        Agendado
+      </option>
+
+      <option
+        value="em_andamento"
+        ${jogo.estado === "em_andamento" ? "selected" : ""}
+      >
+        Em andamento
+      </option>
+
+      <option
+        value="terminado"
+        ${jogo.estado === "terminado" ? "selected" : ""}
+      >
+        Terminado
+      </option>
+
+    </select>
+
+    <button
+      class="btn-verde"
+      onclick="guardarResultado(${Number(jogo.id)})"
+    >
+      💾 Guardar alterações
+    </button>
+
+    <button
+      class="btn-vermelho"
+      onclick="apagarJogo(${Number(jogo.id)})"
+    >
+      🗑️ Apagar jogo
+    </button>
+
+  `;
+
+  lista.appendChild(div);
+
+}
+
+
+// ==========================================
+// RECALCULAR CLASSIFICAÇÃO
+// ==========================================
+
+async function recalcularClassificacao() {
+
+  const { error } = await clienteSupabase
+    .rpc("recalcular_classificacao");
+
+  if (error) {
+
+    console.error(
+      "Erro ao recalcular classificação:",
+      error
+    );
+
+    return {
+      ok: false,
+      error: error.message
+    };
+
+  }
+
+  return {
+    ok: true
+  };
+
+}
+
+
+// ==========================================
+// GUARDAR RESULTADO E FASE
+// ==========================================
+
+async function guardarResultado(id) {
+
+  const campoCasa =
+    document.getElementById("casa-" + id);
+
+  const campoFora =
+    document.getElementById("fora-" + id);
+
+  const campoEstado =
+    document.getElementById("estado-" + id);
+
+  const campoFase =
+    document.getElementById("fase-" + id);
+
+  if (
+    !campoCasa ||
+    !campoFora ||
+    !campoEstado ||
+    !campoFase
+  ) {
+
+    alert("❌ Não foi possível encontrar os campos do jogo.");
+
+    return;
+  }
+
+  if (
+    campoCasa.value === "" ||
+    campoFora.value === ""
+  ) {
+
+    alert("⚠️ Preenche os dois resultados.");
+
+    return;
+  }
+
+  const pontosCasa = Number(campoCasa.value);
+  const pontosFora = Number(campoFora.value);
+
+  const estado = campoEstado.value;
+  const faseId = Number(campoFase.value);
+
+  if (
+    !Number.isInteger(pontosCasa) ||
+    !Number.isInteger(pontosFora) ||
+    pontosCasa < 0 ||
+    pontosFora < 0
+  ) {
+
+    alert("⚠️ Os resultados devem ser números inteiros não negativos.");
+
+    return;
+  }
+
+  if (!IDS_FASES.includes(faseId)) {
+
+    alert("⚠️ Seleciona uma fase válida.");
+
+    return;
+  }
+
+  // Guardar resultado, estado e fase.
+
+  const { data, error } = await clienteSupabase
+    .from("jogos")
+    .update({
+
+      pontos_casa: pontosCasa,
+      pontos_fora: pontosFora,
+
+      estado: estado,
+      fase_id: faseId
+
+    })
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) {
+
+    alert(
+      "❌ Erro ao guardar alterações:\n\n" +
+      error.message
+    );
+
+    return;
+  }
+
+  // Recalcular sempre.
+  // Isto também remove resultados de jogos reabertos,
+  // eliminados da fase de grupos ou transferidos de fase.
+
+  const resultado = await recalcularClassificacao();
+
+  if (!resultado.ok) {
+
+    alert(
+      "⚠️ O jogo foi atualizado, mas ocorreu um erro na classificação:\n\n" +
+      resultado.error
+    );
+
+    await carregarDados();
+
+    return;
+  }
+
+  alert(
+
+    "✅ Alterações guardadas!\n\n" +
+
+    nomeEquipaPorId(data.equipa_casa_id) +
+    " " + data.pontos_casa +
+    " × " +
+    data.pontos_fora + " " +
+    nomeEquipaPorId(data.equipa_fora_id) +
+
+    "\n\nFase: " + obterNomeFase(data.fase_id) +
+
+    "\nEstado: " + data.estado +
+
+    "\n\n📊 Classificação recalculada!"
+
+  );
+
+  await carregarJogos();
+
+}
+
+
+// ==========================================
+// NOME DA EQUIPA POR ID
+// ==========================================
+
+function nomeEquipaPorId(id) {
+
+  const equipa = equipasCache.find(
+    item => Number(item.id) === Number(id)
+  );
+
+  return equipa ? equipa.nome : "Equipa";
+
+}
+
+
+// ==========================================
+// APAGAR JOGO
+// ==========================================
+
+async function apagarJogo(id) {
+
+  const confirmar = confirm(
+    "⚠️ Tens a certeza que queres apagar este jogo?\n\n" +
+    "A classificação será recalculada."
+  );
+
+  if (!confirmar) return;
+
+  const { error } = await clienteSupabase
+    .from("jogos")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+
+    alert(
+      "❌ Erro ao apagar jogo:\n\n" + error.message
+    );
+
+    return;
+  }
+
+  const resultado = await recalcularClassificacao();
+
+  if (!resultado.ok) {
+
+    alert(
+      "⚠️ Jogo apagado, mas a classificação não foi atualizada:\n\n" +
+      resultado.error
+    );
+
+  } else {
+
+    alert(
+      "✅ Jogo apagado!\n\nClassificação recalculada."
+    );
+
+  }
+
+  await carregarDados();
+
+}
+
+
+// ==========================================
+// CARREGAR TODOS OS DADOS
+// ==========================================
+
+async function carregarDados() {
+
+  if (!clienteSupabase) {
+    return;
+  }
+
+  mostrarMensagem("🔄 A carregar dados...");
 
   try {
 
-    if (
-      typeof SUPABASE_URL === "undefined" ||
-      typeof SUPABASE_ANON_KEY === "undefined"
-    ) {
+    await carregarFases();
 
-      throw new Error(
-        "SUPABASE_URL ou SUPABASE_ANON_KEY não encontrados no config.js"
-      );
+    await carregarEquipas();
 
-    }
+    await carregarJogos();
 
-    clienteSupabase =
-      window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_ANON_KEY
-      );
+    mostrarMensagem(
+      "🟢 Supabase conectado! Dados atualizados.",
+      "sucesso"
+    );
 
   } catch (error) {
 
     console.error(
-      "Erro na ligação ao Supabase:",
+      "Erro ao carregar dados:",
       error
     );
-
-    document.getElementById("mensagem").textContent =
-      "🔴 Erro no config.js: verifica a URL e a Publishable Key.";
-
-    document.getElementById("mensagem").className =
-      "mensagem erro";
-
-  }
-
-
-  // ==========================================
-  // MENSAGEM
-  // ==========================================
-
-  function mostrarMensagem(
-    texto,
-    tipo = ""
-  ) {
-
-    const mensagem =
-      document.getElementById("mensagem");
-
-    mensagem.textContent = texto;
-
-    mensagem.className =
-      "mensagem " + tipo;
-
-  }
-
-
-  // ==========================================
-  // ESCAPAR HTML
-  // ==========================================
-
-  function escaparHTML(texto) {
-
-    if (
-      texto === null ||
-      texto === undefined
-    ) {
-
-      return "";
-
-    }
-
-    return String(texto)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-
-  }
-
-
-  // ==========================================
-  // CARREGAR EQUIPAS
-  // ==========================================
-
-  async function carregarEquipas() {
-
-    const { data, error } =
-      await clienteSupabase
-        .from("equipas")
-        .select("id, nome, grupo, cor")
-        .order("id", { ascending: true });
-
-
-    if (error) {
-
-      console.error(
-        "Erro ao carregar equipas:",
-        error
-      );
-
-      document.getElementById(
-        "listaEquipas"
-      ).innerHTML =
-
-        `<p class="erro">
-          ❌ Erro ao carregar equipas.
-          <br><br>
-          ${escaparHTML(error.message)}
-        </p>`;
-
-      throw error;
-
-    }
-
-
-    const lista =
-      document.getElementById(
-        "listaEquipas"
-      );
-
-
-    if (
-      !data ||
-      data.length === 0
-    ) {
-
-      lista.innerHTML =
-        '<p class="vazio">Nenhuma equipa cadastrada.</p>';
-
-    } else {
-
-      lista.innerHTML = "";
-
-      data.forEach(
-        equipa => {
-
-          const div =
-            document.createElement("div");
-
-          div.className =
-            "equipa";
-
-          div.innerHTML = `
-
-            <strong>
-              ${escaparHTML(equipa.nome)}
-            </strong>
-
-            <div class="info">
-
-              👥 Grupo:
-              ${escaparHTML(
-                equipa.grupo || "-"
-              )}
-
-              <br><br>
-
-              🎨 Estado:
-              ${escaparHTML(
-                equipa.cor || "normal"
-              )}
-
-            </div>
-
-            <button
-              class="btn-vermelho"
-              onclick="apagarEquipa(${equipa.id})"
-            >
-              🗑️ Apagar equipa
-            </button>
-
-          `;
-
-          lista.appendChild(div);
-
-        }
-      );
-
-    }
-
-
-    atualizarSelectsEquipas(
-      data || []
-    );
-
-  }
-
-
-  // ==========================================
-  // ATUALIZAR SELECTS
-  // ==========================================
-
-  function atualizarSelectsEquipas(
-    equipas
-  ) {
-
-    const casa =
-      document.getElementById(
-        "equipaCasa"
-      );
-
-    const fora =
-      document.getElementById(
-        "equipaFora"
-      );
-
-    casa.innerHTML =
-      '<option value="">Selecionar equipa</option>';
-
-    fora.innerHTML =
-      '<option value="">Selecionar equipa</option>';
-
-
-    equipas.forEach(
-      equipa => {
-
-        const optionCasa =
-          document.createElement("option");
-
-        optionCasa.value =
-          equipa.id;
-
-        optionCasa.textContent =
-          equipa.nome;
-
-        casa.appendChild(
-          optionCasa
-        );
-
-
-        const optionFora =
-          document.createElement("option");
-
-        optionFora.value =
-          equipa.id;
-
-        optionFora.textContent =
-          equipa.nome;
-
-        fora.appendChild(
-          optionFora
-        );
-
-      }
-    );
-
-  }
-
-
-  // ==========================================
-  // ADICIONAR EQUIPA
-  // ==========================================
-
-  async function adicionarEquipa() {
-
-    const nome =
-      document.getElementById(
-        "nomeEquipa"
-      ).value.trim();
-
-    const grupo =
-      document.getElementById(
-        "grupoEquipa"
-      ).value.trim();
-
-
-    if (!nome) {
-
-      alert(
-        "⚠️ Coloca o nome da equipa."
-      );
-
-      return;
-
-    }
-
-
-    const { data, error } =
-      await clienteSupabase
-        .from("equipas")
-        .insert({
-          nome: nome,
-          grupo: grupo || null,
-          cor: "normal"
-        })
-        .select()
-        .single();
-
-
-    if (error) {
-
-      console.error(
-        "Erro ao adicionar equipa:",
-        error
-      );
-
-      alert(
-        "❌ Erro ao adicionar equipa:\n\n" +
-        error.message
-      );
-
-      return;
-
-    }
-
-
-    alert(
-      "✅ Equipa adicionada com sucesso!\n\n" +
-      data.nome
-    );
-
-
-    document.getElementById(
-      "nomeEquipa"
-    ).value = "";
-
-    document.getElementById(
-      "grupoEquipa"
-    ).value = "";
-
-
-    await carregarEquipas();
-
-  }
-
-
-  // ==========================================
-  // APAGAR EQUIPA
-  // ==========================================
-
-  async function apagarEquipa(id) {
-
-    const confirmar =
-      confirm(
-        "⚠️ Tens certeza que queres apagar esta equipa?\n\n" +
-        "Esta ação pode afetar jogos e classificação."
-      );
-
-
-    if (!confirmar) {
-      return;
-    }
-
-
-    const { error } =
-      await clienteSupabase
-        .from("equipas")
-        .delete()
-        .eq("id", id);
-
-
-    if (error) {
-
-      console.error(
-        "Erro ao apagar equipa:",
-        error
-      );
-
-      alert(
-        "❌ Erro ao apagar equipa:\n\n" +
-        error.message
-      );
-
-      return;
-
-    }
-
-
-    alert(
-      "✅ Equipa apagada com sucesso!"
-    );
-
-
-    await carregarDados();
-
-  }
-
-
-  // ==========================================
-  // ADICIONAR JOGO
-  // ==========================================
-
-  async function adicionarJogo() {
-
-    const equipaCasa =
-      document.getElementById(
-        "equipaCasa"
-      ).value;
-
-    const equipaFora =
-      document.getElementById(
-        "equipaFora"
-      ).value;
-
-    const dataJogo =
-      document.getElementById(
-        "dataJogo"
-      ).value;
-
-    const horaJogo =
-      document.getElementById(
-        "horaJogo"
-      ).value;
-
-    const localJogo =
-      document.getElementById(
-        "localJogo"
-      ).value.trim();
-
-
-    if (
-      !equipaCasa ||
-      !equipaFora
-    ) {
-
-      alert(
-        "⚠️ Seleciona as duas equipas."
-      );
-
-      return;
-
-    }
-
-
-    if (
-      equipaCasa === equipaFora
-    ) {
-
-      alert(
-        "⚠️ A equipa da casa e a equipa visitante não podem ser iguais."
-      );
-
-      return;
-
-    }
-
-
-    const { data, error } =
-      await clienteSupabase
-        .from("jogos")
-        .insert({
-
-          equipa_casa_id:
-            Number(equipaCasa),
-
-          equipa_fora_id:
-            Number(equipaFora),
-
-          data_jogo:
-            dataJogo || null,
-
-          hora_jogo:
-            horaJogo || null,
-
-          local:
-            localJogo || null,
-
-          pontos_casa: 0,
-
-          pontos_fora: 0,
-
-          estado: "agendado"
-
-        })
-        .select()
-        .single();
-
-
-    if (error) {
-
-      console.error(
-        "Erro ao criar jogo:",
-        error
-      );
-
-      alert(
-        "❌ Erro ao criar jogo:\n\n" +
-        error.message
-      );
-
-      return;
-
-    }
-
-
-    alert(
-      "✅ Jogo criado com sucesso!"
-    );
-
-
-    document.getElementById(
-      "equipaCasa"
-    ).value = "";
-
-    document.getElementById(
-      "equipaFora"
-    ).value = "";
-
-    document.getElementById(
-      "dataJogo"
-    ).value = "";
-
-    document.getElementById(
-      "horaJogo"
-    ).value = "";
-
-    document.getElementById(
-      "localJogo"
-    ).value = "";
-
-
-    await carregarJogos();
-
-  }
-
-
-  // ==========================================
-  // CARREGAR JOGOS
-  // ==========================================
-
-  async function carregarJogos() {
-
-    const lista =
-      document.getElementById(
-        "listaJogos"
-      );
-
-
-    const { data, error } =
-      await clienteSupabase
-        .from("jogos")
-        .select(`
-          id,
-          data_jogo,
-          hora_jogo,
-          local,
-          pontos_casa,
-          pontos_fora,
-          estado,
-          equipa_casa_id,
-          equipa_fora_id
-        `)
-        .order(
-          "data_jogo",
-          { ascending: true }
-        );
-
-
-    if (error) {
-
-      console.error(
-        "Erro ao carregar jogos:",
-        error
-      );
-
-      lista.innerHTML =
-
-        `<p class="erro">
-          ❌ Erro ao carregar jogos.
-          <br><br>
-          ${escaparHTML(error.message)}
-        </p>`;
-
-      throw error;
-
-    }
-
-
-    if (
-      !data ||
-      data.length === 0
-    ) {
-
-      lista.innerHTML =
-        '<p class="vazio">Nenhum jogo cadastrado.</p>';
-
-      return;
-
-    }
-
-
-    const {
-      data: equipas,
-      error: erroEquipas
-    } =
-      await clienteSupabase
-        .from("equipas")
-        .select("id, nome");
-
-
-    if (erroEquipas) {
-
-      console.error(
-        erroEquipas
-      );
-
-      throw erroEquipas;
-
-    }
-
-
-    const mapaEquipas = {};
-
-
-    equipas.forEach(
-      equipa => {
-
-        mapaEquipas[
-          equipa.id
-        ] =
-          equipa.nome;
-
-      }
-    );
-
-
-    lista.innerHTML = "";
-
-
-    data.forEach(
-      jogo => {
-
-        const nomeCasa =
-          mapaEquipas[
-            jogo.equipa_casa_id
-          ] ||
-          "Equipa";
-
-
-        const nomeFora =
-          mapaEquipas[
-            jogo.equipa_fora_id
-          ] ||
-          "Equipa";
-
-
-        const div =
-          document.createElement(
-            "div"
-          );
-
-
-        div.className =
-          "jogo";
-
-
-        div.innerHTML = `
-
-          <strong>
-
-            ${escaparHTML(
-              nomeCasa
-            )}
-
-            ×
-
-            ${escaparHTML(
-              nomeFora
-            )}
-
-          </strong>
-
-          <br><br>
-
-          📅 Data:
-          ${escaparHTML(
-            jogo.data_jogo || "-"
-          )}
-
-          <br>
-
-          🕐 Hora:
-          ${escaparHTML(
-            jogo.hora_jogo || "-"
-          )}
-
-          <br>
-
-          📍 Local:
-          ${escaparHTML(
-            jogo.local || "-"
-          )}
-
-          <div class="resultado">
-
-            <input
-              type="number"
-              min="0"
-              id="casa-${jogo.id}"
-              value="${jogo.pontos_casa ?? 0}"
-            >
-
-            <strong>×</strong>
-
-            <input
-              type="number"
-              min="0"
-              id="fora-${jogo.id}"
-              value="${jogo.pontos_fora ?? 0}"
-            >
-
-          </div>
-
-
-          <select id="estado-${jogo.id}">
-
-            <option
-              value="agendado"
-              ${
-                jogo.estado === "agendado"
-                  ? "selected"
-                  : ""
-              }
-            >
-              Agendado
-            </option>
-
-            <option
-              value="em_andamento"
-              ${
-                jogo.estado === "em_andamento"
-                  ? "selected"
-                  : ""
-              }
-            >
-              Em andamento
-            </option>
-
-            <option
-              value="terminado"
-              ${
-                jogo.estado === "terminado"
-                  ? "selected"
-                  : ""
-              }
-            >
-              Terminado
-            </option>
-
-          </select>
-
-
-          <button
-            class="btn-verde"
-            onclick="guardarResultado(${jogo.id})"
-          >
-            💾 Guardar resultado
-          </button>
-
-
-          <button
-            class="btn-vermelho"
-            onclick="apagarJogo(${jogo.id})"
-          >
-            🗑️ Apagar jogo
-          </button>
-
-        `;
-
-
-        lista.appendChild(
-          div
-        );
-
-      }
-    );
-
-  }
-
-
-  // ==========================================
-  // GUARDAR RESULTADO
-  // ==========================================
-
-  async function guardarResultado(id) {
-
-    const idJogo =
-      Number(id);
-
-
-    if (!idJogo) {
-
-      alert(
-        "❌ ID do jogo inválido."
-      );
-
-      return;
-
-    }
-
-
-    const campoCasa =
-      document.getElementById(
-        `casa-${idJogo}`
-      );
-
-    const campoFora =
-      document.getElementById(
-        `fora-${idJogo}`
-      );
-
-    const campoEstado =
-      document.getElementById(
-        `estado-${idJogo}`
-      );
-
-
-    if (
-      !campoCasa ||
-      !campoFora ||
-      !campoEstado
-    ) {
-
-      alert(
-        "❌ Não foi possível encontrar os campos deste jogo."
-      );
-
-      return;
-
-    }
-
-
-    if (
-      campoCasa.value === "" ||
-      campoFora.value === ""
-    ) {
-
-      alert(
-        "⚠️ Coloca os dois resultados."
-      );
-
-      return;
-
-    }
-
-
-    const pontosCasa =
-      Number(
-        campoCasa.value
-      );
-
-    const pontosFora =
-      Number(
-        campoFora.value
-      );
-
-    const estado =
-      campoEstado.value;
-
-
-    if (
-      !Number.isInteger(pontosCasa) ||
-      !Number.isInteger(pontosFora)
-    ) {
-
-      alert(
-        "⚠️ Os resultados devem ser números inteiros."
-      );
-
-      return;
-
-    }
-
-
-    if (
-      pontosCasa < 0 ||
-      pontosFora < 0
-    ) {
-
-      alert(
-        "⚠️ Os pontos não podem ser negativos."
-      );
-
-      return;
-
-    }
-
-
-    // ==========================================
-    // 1. GUARDAR RESULTADO
-    // ==========================================
-
-    const {
-      data,
-      error
-    } =
-      await clienteSupabase
-        .from("jogos")
-        .update({
-
-          pontos_casa:
-            pontosCasa,
-
-          pontos_fora:
-            pontosFora,
-
-          estado:
-            estado
-
-        })
-        .eq(
-          "id",
-          idJogo
-        )
-        .select()
-        .single();
-
-
-    if (error) {
-
-      console.error(
-        "Erro ao guardar resultado:",
-        error
-      );
-
-      alert(
-        "❌ Erro ao guardar o resultado:\n\n" +
-        error.message
-      );
-
-      return;
-
-    }
-
-
-    // ==========================================
-    // 2. RECALCULAR CLASSIFICAÇÃO
-    // ==========================================
-
-    if (
-      estado === "terminado"
-    ) {
-
-      const {
-        error: erroClassificacao
-      } =
-        await clienteSupabase
-          .rpc(
-            "recalcular_classificacao"
-          );
-
-
-      if (erroClassificacao) {
-
-        console.error(
-          "Erro ao recalcular classificação:",
-          erroClassificacao
-        );
-
-        alert(
-          "⚠️ O resultado foi guardado, mas a classificação não pôde ser atualizada:\n\n" +
-          erroClassificacao.message
-        );
-
-        await carregarJogos();
-
-        return;
-
-      }
-
-    }
-
-
-    // ==========================================
-    // 3. CONFIRMAÇÃO
-    // ==========================================
-
-    alert(
-
-      "✅ Resultado guardado com sucesso!\n\n" +
-
-      `${data.pontos_casa} - ${data.pontos_fora}\n` +
-
-      `Estado: ${data.estado}\n\n` +
-
-      (
-        estado === "terminado"
-          ? "📊 Classificação atualizada automaticamente!"
-          : "ℹ️ A classificação será atualizada quando o jogo terminar."
-      )
-
-    );
-
-
-    await carregarJogos();
-
-  }
-
-
-  // ==========================================
-  // APAGAR JOGO
-  // ==========================================
-
-  async function apagarJogo(id) {
-
-    const confirmar =
-      confirm(
-        "⚠️ Tens certeza que queres apagar este jogo?"
-      );
-
-
-    if (!confirmar) {
-
-      return;
-
-    }
-
-
-    const {
-      error
-    } =
-      await clienteSupabase
-        .from("jogos")
-        .delete()
-        .eq(
-          "id",
-          id
-        );
-
-
-    if (error) {
-
-      console.error(
-        "Erro ao apagar jogo:",
-        error
-      );
-
-      alert(
-        "❌ Erro ao apagar jogo:\n\n" +
-        error.message
-      );
-
-      return;
-
-    }
-
-
-    alert(
-      "✅ Jogo apagado com sucesso!"
-    );
-
-
-    await carregarDados();
-
-  }
-
-
-  // ==========================================
-  // CARREGAR TODOS OS DADOS
-  // ==========================================
-
-  async function carregarDados() {
 
     mostrarMensagem(
-      "🔄 A carregar dados..."
+      "🔴 Erro ao carregar dados: " + error.message,
+      "erro"
     );
-
-
-    try {
-
-      await carregarEquipas();
-
-      await carregarJogos();
-
-
-      mostrarMensagem(
-        "🟢 Supabase conectado! Dados atualizados.",
-        "sucesso"
-      );
-
-
-    } catch (error) {
-
-      console.error(
-        "Erro ao carregar dados:",
-        error
-      );
-
-
-      mostrarMensagem(
-        "🔴 Erro ao carregar os dados. Verifica as permissões das tabelas.",
-        "erro"
-      );
-
-    }
 
   }
 
+}
 
-  // ==========================================
-  // INICIAR PAINEL
-  // ==========================================
 
-  document.addEventListener(
-    "DOMContentLoaded",
-    function() {
+// ==========================================
+// INICIAR
+// ==========================================
 
-      carregarDados();
+document.addEventListener(
+  "DOMContentLoaded",
+  function() {
 
-    }
-  );
+    carregarDados();
+
+  }
+);
 
 </script>
 
