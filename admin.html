@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -177,6 +178,36 @@
       margin-top: 8px;
     }
 
+    /* AUTENTICAÇÃO */
+
+    #areaLogin {
+      max-width: 430px;
+      margin: 30px auto;
+    }
+
+    #areaLogin[hidden],
+    #painelAdmin[hidden] {
+      display: none !important;
+    }
+
+    #painelAdmin {
+      display: block;
+    }
+
+    #areaLogin label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+    }
+
+    #btnSair {
+      background: #dc2626;
+    }
+
+    #utilizadorAdmin {
+      overflow-wrap: anywhere;
+    }
+
     @media (max-width: 600px) {
       .linha {
         grid-template-columns: 1fr;
@@ -202,105 +233,170 @@
     🔄 A ligar ao Supabase...
   </div>
 
-  <!-- ADICIONAR EQUIPA -->
+  <!-- LOGIN ADMINISTRATIVO -->
 
-  <section class="caixa">
-    <h2>➕ Adicionar equipa</h2>
+  <section id="areaLogin" class="caixa" hidden>
 
-    <input
-      type="text"
-      id="nomeEquipa"
-      placeholder="Nome da equipa"
-    >
+    <h2>🔐 Acesso administrativo</h2>
 
-    <input
-      type="text"
-      id="grupoEquipa"
-      placeholder="Grupo (ex.: A)"
-    >
+    <p>Entra com a tua conta autorizada do Interclasse.</p>
 
-    <button class="btn-verde" onclick="adicionarEquipa()">
-      ➕ Adicionar equipa
-    </button>
+    <form id="formLogin">
+
+      <label for="emailLogin">E-mail</label>
+
+      <input
+        type="email"
+        id="emailLogin"
+        autocomplete="username"
+        placeholder="E-mail da conta"
+        required
+      >
+
+      <label for="senhaLogin">Palavra-passe</label>
+
+      <input
+        type="password"
+        id="senhaLogin"
+        autocomplete="current-password"
+        placeholder="Palavra-passe"
+        required
+      >
+
+      <button
+        type="submit"
+        class="btn-principal"
+        id="btnEntrar"
+      >
+        🔓 Entrar
+      </button>
+
+    </form>
+
   </section>
 
-  <!-- EQUIPAS -->
+  <!-- PAINEL ADMINISTRATIVO PROTEGIDO -->
 
-  <section class="caixa">
-    <h2>👥 Equipas</h2>
+  <div id="painelAdmin" hidden>
 
-    <div id="listaEquipas">
-      A carregar...
-    </div>
-  </section>
+    <section class="caixa">
 
-  <!-- ADICIONAR JOGO -->
+      <h2>🔓 Sessão administrativa</h2>
 
-  <section class="caixa">
-    <h2>⚽ Adicionar jogo</h2>
+      <p id="utilizadorAdmin"></p>
 
-    <label>Fase da competição</label>
+      <button
+        id="btnSair"
+        type="button"
+        class="btn-vermelho"
+        onclick="terminarSessao()"
+      >
+        🚪 Terminar sessão
+      </button>
 
-    <select id="faseJogo">
-      <option value="6">Fase de grupos</option>
-    </select>
+    </section>
 
-    <div class="linha">
-      <div>
-        <label>Equipa da casa</label>
-        <select id="equipaCasa">
-          <option value="">Selecionar equipa</option>
-        </select>
+    <!-- ADICIONAR EQUIPA -->
+
+    <section class="caixa">
+      <h2>➕ Adicionar equipa</h2>
+
+      <input
+        type="text"
+        id="nomeEquipa"
+        placeholder="Nome da equipa"
+      >
+
+      <input
+        type="text"
+        id="grupoEquipa"
+        placeholder="Grupo (ex.: A)"
+      >
+
+      <button class="btn-verde" onclick="adicionarEquipa()">
+        ➕ Adicionar equipa
+      </button>
+    </section>
+
+    <!-- EQUIPAS -->
+
+    <section class="caixa">
+      <h2>👥 Equipas</h2>
+
+      <div id="listaEquipas">
+        A carregar...
+      </div>
+    </section>
+
+    <!-- ADICIONAR JOGO -->
+
+    <section class="caixa">
+      <h2>⚽ Adicionar jogo</h2>
+
+      <label>Fase da competição</label>
+
+      <select id="faseJogo">
+        <option value="6">Fase de grupos</option>
+      </select>
+
+      <div class="linha">
+        <div>
+          <label>Equipa da casa</label>
+          <select id="equipaCasa">
+            <option value="">Selecionar equipa</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Equipa visitante</label>
+          <select id="equipaFora">
+            <option value="">Selecionar equipa</option>
+          </select>
+        </div>
       </div>
 
-      <div>
-        <label>Equipa visitante</label>
-        <select id="equipaFora">
-          <option value="">Selecionar equipa</option>
-        </select>
-      </div>
-    </div>
+      <div class="linha">
+        <div>
+          <label>Data</label>
+          <input type="date" id="dataJogo">
+        </div>
 
-    <div class="linha">
-      <div>
-        <label>Data</label>
-        <input type="date" id="dataJogo">
+        <div>
+          <label>Hora</label>
+          <input type="time" id="horaJogo">
+        </div>
       </div>
 
-      <div>
-        <label>Hora</label>
-        <input type="time" id="horaJogo">
+      <input
+        type="text"
+        id="localJogo"
+        placeholder="Local do jogo"
+      >
+
+      <button class="btn-azul" onclick="adicionarJogo()">
+        ➕ Criar jogo
+      </button>
+    </section>
+
+    <!-- JOGOS -->
+
+    <section class="caixa">
+      <h2>📅 Jogos da competição</h2>
+
+      <div id="listaJogos">
+        A carregar...
       </div>
-    </div>
+    </section>
 
-    <input
-      type="text"
-      id="localJogo"
-      placeholder="Local do jogo"
-    >
+    <!-- ATUALIZAR -->
 
-    <button class="btn-azul" onclick="adicionarJogo()">
-      ➕ Criar jogo
-    </button>
-  </section>
+    <section class="caixa">
+      <button class="btn-principal" onclick="carregarDados()">
+        🔄 Atualizar dados
+      </button>
+    </section>
 
-  <!-- JOGOS -->
-
-  <section class="caixa">
-    <h2>📅 Jogos da competição</h2>
-
-    <div id="listaJogos">
-      A carregar...
-    </div>
-  </section>
-
-  <!-- ATUALIZAR -->
-
-  <section class="caixa">
-    <button class="btn-principal" onclick="carregarDados()">
-      🔄 Atualizar dados
-    </button>
-  </section>
+  </div>
 
 </main>
 
@@ -1273,14 +1369,323 @@ async function carregarDados() {
 
 
 // ==========================================
-// INICIAR
+// MOSTRAR LOGIN
+// ==========================================
+
+function mostrarLogin() {
+
+  document.getElementById("areaLogin").hidden = false;
+
+  document.getElementById("painelAdmin").hidden = true;
+
+}
+
+
+// ==========================================
+// MOSTRAR PAINEL
+// ==========================================
+
+function mostrarPainel(email) {
+
+  document.getElementById("areaLogin").hidden = true;
+
+  document.getElementById("painelAdmin").hidden = false;
+
+  document.getElementById("utilizadorAdmin").textContent =
+    "Sessão iniciada: " + (email || "Administrador");
+
+}
+
+
+// ==========================================
+// VERIFICAR ADMINISTRADOR
+// ==========================================
+
+async function verificarAdministrador() {
+
+  if (!clienteSupabase) {
+
+    mostrarLogin();
+
+    mostrarMensagem(
+      "🔴 Não foi possível ligar ao Supabase.",
+      "erro"
+    );
+
+    return;
+
+  }
+
+  mostrarLogin();
+
+  mostrarMensagem(
+    "🔄 A verificar a sessão..."
+  );
+
+  try {
+
+    const {
+      data: sessaoData,
+      error: sessaoErro
+    } = await clienteSupabase.auth.getSession();
+
+    if (sessaoErro) {
+      throw sessaoErro;
+    }
+
+    const sessao = sessaoData.session;
+
+    if (!sessao) {
+
+      mostrarLogin();
+
+      mostrarMensagem(
+        "🔐 Inicia sessão para aceder ao painel."
+      );
+
+      return;
+
+    }
+
+    const {
+      data: utilizadorData,
+      error: utilizadorErro
+    } = await clienteSupabase.auth.getUser();
+
+    if (utilizadorErro || !utilizadorData.user) {
+
+      await clienteSupabase.auth.signOut();
+
+      mostrarLogin();
+
+      mostrarMensagem(
+        "🔴 Não foi possível validar a tua sessão.",
+        "erro"
+      );
+
+      return;
+
+    }
+
+    const {
+      data: autorizado,
+      error: adminErro
+    } = await clienteSupabase.rpc("is_admin");
+
+    if (adminErro) {
+
+      console.error(
+        "Erro ao verificar administrador:",
+        adminErro
+      );
+
+      mostrarLogin();
+
+      mostrarMensagem(
+        "🔴 Não foi possível verificar as permissões. Tenta novamente.",
+        "erro"
+      );
+
+      return;
+
+    }
+
+    if (autorizado !== true) {
+
+      await clienteSupabase.auth.signOut();
+
+      mostrarLogin();
+
+      mostrarMensagem(
+        "⛔ Esta conta não tem autorização para administrar o Interclasse.",
+        "erro"
+      );
+
+      return;
+
+    }
+
+    mostrarPainel(utilizadorData.user.email);
+
+    mostrarMensagem(
+      "🟢 Acesso autorizado! A carregar o painel...",
+      "sucesso"
+    );
+
+    await carregarDados();
+
+  } catch (error) {
+
+    console.error(
+      "Erro na autenticação:",
+      error
+    );
+
+    mostrarLogin();
+
+    mostrarMensagem(
+      "🔴 Erro ao verificar o acesso: " + error.message,
+      "erro"
+    );
+
+  }
+
+}
+
+
+// ==========================================
+// ENTRAR NO PAINEL
+// ==========================================
+
+async function entrarNoPainel(event) {
+
+  event.preventDefault();
+
+  if (!clienteSupabase) {
+
+    mostrarMensagem(
+      "🔴 Supabase não está configurado.",
+      "erro"
+    );
+
+    return;
+
+  }
+
+  const email = document
+    .getElementById("emailLogin")
+    .value.trim();
+
+  const senha = document
+    .getElementById("senhaLogin")
+    .value;
+
+  const botao = document.getElementById("btnEntrar");
+
+  botao.disabled = true;
+
+  botao.textContent = "A verificar...";
+
+  mostrarMensagem(
+    "🔄 A autenticar..."
+  );
+
+  try {
+
+    const { error } =
+      await clienteSupabase.auth.signInWithPassword({
+
+        email: email,
+        password: senha
+
+      });
+
+    if (error) {
+
+      mostrarMensagem(
+        "🔴 E-mail ou palavra-passe incorrectos.",
+        "erro"
+      );
+
+      return;
+
+    }
+
+    await verificarAdministrador();
+
+  } catch (error) {
+
+    console.error(error);
+
+    mostrarMensagem(
+      "🔴 Erro ao iniciar sessão: " + error.message,
+      "erro"
+    );
+
+  } finally {
+
+    botao.disabled = false;
+
+    botao.textContent = "🔓 Entrar";
+
+  }
+
+}
+
+
+// ==========================================
+// TERMINAR SESSÃO
+// ==========================================
+
+async function terminarSessao() {
+
+  const confirmar = confirm(
+    "Tens a certeza que queres terminar a sessão?"
+  );
+
+  if (!confirmar) return;
+
+  try {
+
+    const { error } =
+      await clienteSupabase.auth.signOut();
+
+    if (error) {
+      throw error;
+    }
+
+    mostrarLogin();
+
+    document.getElementById("formLogin").reset();
+
+    mostrarMensagem(
+      "🔐 Sessão terminada com sucesso.",
+      "sucesso"
+    );
+
+  } catch (error) {
+
+    console.error(error);
+
+    mostrarMensagem(
+      "🔴 Erro ao terminar sessão: " + error.message,
+      "erro"
+    );
+
+  }
+
+}
+
+
+// ==========================================
+// INICIAR APLICAÇÃO
 // ==========================================
 
 document.addEventListener(
   "DOMContentLoaded",
   function() {
 
-    carregarDados();
+    mostrarLogin();
+
+    if (!clienteSupabase) {
+
+      mostrarMensagem(
+        "🔴 Erro na configuração do Supabase.",
+        "erro"
+      );
+
+      return;
+
+    }
+
+    document
+      .getElementById("formLogin")
+      .addEventListener(
+        "submit",
+        entrarNoPainel
+      );
+
+    verificarAdministrador();
 
   }
 );
@@ -1288,4 +1693,4 @@ document.addEventListener(
 </script>
 
 </body>
-  </html>
+</html>
