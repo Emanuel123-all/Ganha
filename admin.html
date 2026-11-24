@@ -861,7 +861,8 @@ async function carregarJogos() {
       pontos_fora,
       estado,
       equipa_casa_id,
-      equipa_fora_id
+      equipa_fora_id,
+      mvp_nome
     `)
     .order("data_jogo", { ascending: true })
     .order("hora_jogo", { ascending: true });
@@ -1078,6 +1079,28 @@ function criarCartaoJogo(jogo, mapaEquipas, lista) {
 
     </select>
 
+    <!-- MVP DO JOGO -->
+
+    <label for="mvp-${jogo.id}">
+      🏅 MVP do jogo (opcional)
+    </label>
+
+    <input
+      type="text"
+      id="mvp-${jogo.id}"
+      maxlength="100"
+      placeholder="Nome do melhor jogador em campo"
+      value="${escaparHTML(jogo.mvp_nome || "")}"
+    >
+
+    <button
+      type="button"
+      class="btn-azul"
+      onclick="guardarMVP(${Number(jogo.id)})"
+    >
+      🏅 Guardar MVP
+    </button>
+
     <button
       class="btn-verde"
       onclick="guardarResultado(${Number(jogo.id)})"
@@ -1095,6 +1118,89 @@ function criarCartaoJogo(jogo, mapaEquipas, lista) {
   `;
 
   lista.appendChild(div);
+
+}
+
+
+// ==========================================
+// GUARDAR MVP DO JOGO
+// ==========================================
+
+async function guardarMVP(id) {
+
+  const campoMVP = document.getElementById("mvp-" + id);
+
+  if (!campoMVP) {
+
+    alert("❌ Não foi possível encontrar o campo do MVP.");
+
+    return;
+  }
+
+  const mvpNome = campoMVP.value.trim();
+
+  if (mvpNome.length > 100) {
+
+    alert("⚠️ O nome do MVP não pode ultrapassar 100 caracteres.");
+
+    return;
+  }
+
+  const botao = campoMVP.nextElementSibling;
+
+  if (botao) {
+    botao.disabled = true;
+    botao.textContent = "A guardar MVP...";
+  }
+
+  try {
+
+    const { data, error } = await clienteSupabase
+      .from("jogos")
+      .update({
+        mvp_nome: mvpNome || null
+      })
+      .eq("id", id)
+      .select("id, mvp_nome")
+      .single();
+
+    if (error) {
+
+      console.error("Erro ao guardar MVP:", error);
+
+      alert(
+        "❌ Não foi possível guardar o MVP:\n\n" +
+        error.message
+      );
+
+      return;
+    }
+
+    alert(
+      data.mvp_nome
+        ? "🏅 MVP guardado com sucesso!\n\nJogador: " + data.mvp_nome
+        : "✅ MVP removido deste jogo."
+    );
+
+    await carregarJogos();
+
+  } catch (error) {
+
+    console.error("Erro inesperado ao guardar MVP:", error);
+
+    alert(
+      "❌ Ocorreu um erro inesperado ao guardar o MVP:\n\n" +
+      error.message
+    );
+
+  } finally {
+
+    if (botao && botao.isConnected) {
+      botao.disabled = false;
+      botao.textContent = "🏅 Guardar MVP";
+    }
+
+  }
 
 }
 
