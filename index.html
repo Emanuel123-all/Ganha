@@ -15,6 +15,8 @@
     :root {
       --azul-escuro: #071225;
       --azul: #2563eb;
+      --verde: #22c55e;
+      --vermelho: #ef4444;
       --texto: #f8fafc;
       --texto-secundario: #cbd5e1;
       --cartao: rgba(9, 20, 40, 0.88);
@@ -154,7 +156,7 @@
       display: inline-block;
     }
 
-    .bolinha.azul { background: #3b82f6; }
+    .bolinha.verde { background: #22c55e; }
     .bolinha.vermelha { background: #ef4444; }
 
     .grupo-card {
@@ -218,25 +220,27 @@
       font-weight: bold;
     }
 
+    /* ZONA DE APURAMENTO - VERDE */
     tr.apurada {
-      background: rgba(30, 64, 175, 0.22) !important;
-      color: #bfdbfe;
+      background: rgba(22, 101, 52, 0.25) !important;
+      color: #bbf7d0;
     }
 
+    /* FORA DA ZONA - VERMELHO */
     tr.eliminada {
       background: rgba(127, 29, 29, 0.16) !important;
       color: #fecaca;
     }
 
     tr.apurada td:first-child {
-      border-left: 4px solid #3b82f6;
+      border-left: 4px solid #22c55e;
     }
 
     tr.eliminada td:first-child {
       border-left: 4px solid #ef4444;
     }
 
-    tr.apurada td { color: #dbeafe; }
+    tr.apurada td { color: #dcfce7; }
     tr.eliminada td { color: #fee2e2; }
 
     .posicao { font-weight: bold; }
@@ -251,12 +255,14 @@
       white-space: nowrap;
     }
 
-    .situacao.azul {
-      background: rgba(37, 99, 235, 0.25);
-      color: #bfdbfe;
-      border: 1px solid rgba(59, 130, 246, 0.35);
+    /* INDICADOR VERDE */
+    .situacao.verde {
+      background: rgba(22, 163, 74, 0.22);
+      color: #bbf7d0;
+      border: 1px solid rgba(34, 197, 94, 0.40);
     }
 
+    /* INDICADOR VERMELHO */
     .situacao.vermelha {
       background: rgba(220, 38, 38, 0.20);
       color: #fecaca;
@@ -453,7 +459,7 @@
     <h2>📊 Classificação por grupos</h2>
 
     <div class="legenda">
-      <span><i class="bolinha azul"></i> Zona de apuramento</span>
+      <span><i class="bolinha verde"></i> Zona de apuramento</span>
       <span><i class="bolinha vermelha"></i> Fora da zona de apuramento</span>
     </div>
 
@@ -763,7 +769,7 @@ function ordenarGrupo(equipas, jogos) {
 // ==========================================
 
 function apuradaClasse(apurada) {
-  return apurada ? "azul" : "vermelha";
+  return apurada ? "verde" : "vermelha";
 }
 
 // ==========================================
